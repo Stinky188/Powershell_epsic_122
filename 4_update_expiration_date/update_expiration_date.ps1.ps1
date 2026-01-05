@@ -1,5 +1,4 @@
-#### NEED TO EXPORT USERS TO CSV FIRST, THE DUPLICATE USERNAMES ARE MAKING THIS FAIL.
-#### SHOULD DO AN EXPORT RIGHT AFTER INSERT USERS SCRIPT
+#### NEED TO EXPORT USERS TO CSV FIRST, THE DUPLICATE USERNAMES ARE MAKING THIS FAIL. (This is now done since I've added the export to csv at the end of the last script)
 
 
 [CmdletBinding()]
@@ -45,6 +44,3 @@ foreach ($user in $userData) {
 }
 
 
-# Please ensure that your CSV file (Users.csv) has a header row with the column Username (case-sensitive) containing the usernames for which you want to set the expiration date.
-
-# Note: Make sure to test scripts in a safe environment before applying them to a production Active Directory. Ensure that you have the necessary permissions to modify user account information.

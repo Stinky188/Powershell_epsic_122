@@ -2,7 +2,7 @@
 
 ## Description
 
-Ce script PowerShell permet d’automatiser la création d’utilisateurs dans Active Directory (AD) à partir d’un fichier CSV. Il garantit l’unicité des noms d’utilisateur en ajoutant un suffixe numérique en cas de doublon, et organise les comptes dans des unités d’organisation (OU) en fonction des départements. Le script exporte ensuite la liste mise à jour des utilisateurs dans le même fichier CSV, enrichie des informations de domaine.
+Ce script PowerShell permet d’automatiser la création d’utilisateurs dans Active Directory (AD) à partir d’un fichier CSV. Il garantit l’unicité des noms d’utilisateur en ajoutant un suffixe numérique en cas de doublon, et organise les comptes dans des unités d’organisation (OU) en fonction des départements. L'utilisateur devra changer son mot de passe lors de sa première connexion. Les utilisateurs créés sont ensuite reexportés au format csv pour gérer les différences en cas de doublons (ex: adale, adale2, adale3, etc.)
 
 ---
 
