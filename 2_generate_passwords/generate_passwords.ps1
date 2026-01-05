@@ -1,26 +1,26 @@
 <#
 SYNOPSIS
-This script generates random passwords for users listed in a CSV file and appends these passwords as a new column.
+Ce script génère des mots de passe aléatoires pour les utilisateurs listés dans un fichier CSV et ajoute ces mots de passe en tant que nouvelle colonne.
 
 DESCRIPTION
-The script reads user data from a CSV file, generates a secure random password for each user using a customizable function, 
-and exports the updated data back to the CSV. It ensures that the generated passwords include mandatory character sets 
-(uppercase, lowercase, numbers, symbols) for stronger security.
+Le script lit les données utilisateurs depuis un fichier CSV, génère un mot de passe sécurisé et aléatoire pour chaque utilisateur 
+en utilisant une fonction personnalisable, puis exporte les données mises à jour dans le CSV. Il garantit que les mots de passe 
+générés contiennent des ensembles de caractères obligatoires (majuscules, minuscules, chiffres, symboles) pour une meilleure sécurité.
 
-AUTHOR
+AUTEUR
 Alice Dale - alice.dale@eduvaud.ch
 
 LIMITATIONS
-- The script assumes the CSV uses ';' as delimiter.
-- Password length and character sets are currently fixed but could be parameterized.
-- The script overwrites the original CSV file, so backup is recommended.
-- No error handling implemented for file access or CSV format issues.
+- Le script suppose que le CSV utilise le point-virgule (';') comme séparateur.
+- La longueur des mots de passe et les ensembles de caractères sont actuellement fixes mais pourraient être paramétrés.
+- Le script écrase le fichier CSV original, il est donc recommandé de faire une sauvegarde.
+- Aucune gestion d’erreur n’est implémentée pour l’accès au fichier ou les problèmes de format CSV.
 
-EXAMPLES
-# Generate passwords for users in users.csv with default parameters
+EXEMPLES
+# Générer des mots de passe pour les utilisateurs dans users.csv avec les paramètres par défaut
 .\GeneratePasswords.ps1 -csvFilePath "C:\path\to\users.csv"
 
-# Description of usage and expected input/output is in the README file.
+# La description de l’utilisation et les entrées/sorties attendues sont dans le fichier README.
 #>
 
 [CmdletBinding()]
@@ -29,60 +29,60 @@ param(
     [string]$csvFilePath = $csvinput
 )
 
-# Validate that the input file has a .csv extension to avoid processing unsupported formats.
+# Vérifie que le fichier d’entrée a une extension .csv pour éviter de traiter des formats non supportés.
 if ([IO.Path]::GetExtension($csvFilePath) -match ".csv") {
     Write-Output "Le chemin pour le fichier .csv est valable"
 }
 else {
-    # Warn the user early to prevent downstream errors related to invalid file types.
+    # Avertit l’utilisateur rapidement pour éviter des erreurs plus tard liées à un type de fichier invalide.
     Write-Warning "Chemin invalide. Le nom du fichier doit se terminer en .csv"
 }
 
-# Import user data from the CSV file using the specified delimiter to correctly parse fields.
+# Importe les données utilisateurs depuis le fichier CSV en utilisant le délimiteur spécifié pour bien parser les champs.
 $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 
-# This function generates a random password string of given length.
-# It ensures mandatory inclusion of uppercase, lowercase, numerals, and symbols by design.
+# Cette fonction génère une chaîne de caractères aléatoire de la taille donnée.
+# Elle garantit l’inclusion obligatoire de majuscules, minuscules, chiffres et symboles par conception.
 Function Create-String([Int]$Size = 8, [Char[]]$CharSets = "ULNS", [Char[]]$Exclude) {
     $Chars = @()
     $TokenSet = @()
 
-    # Cache the token sets globally to avoid rebuilding them on each function call, improving performance.
+    # Met en cache les ensembles de caractères globalement pour éviter de les reconstruire à chaque appel, améliorant ainsi les performances.
     If (!$TokenSets) {
         $Global:TokenSets = @{
-            U = [Char[]]'ABCDEFGHIJKLMNOPQRSTUVWXYZ'                                # Upper case
-            L = [Char[]]'abcdefghijklmnopqrstuvwxyz'                                # Lower case
-            N = [Char[]]'0123456789'                                                # Numerals
-            S = [Char[]]'!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~'                         # Symbols
+            U = [Char[]]'ABCDEFGHIJKLMNOPQRSTUVWXYZ'                                # Majuscules
+            L = [Char[]]'abcdefghijklmnopqrstuvwxyz'                                # Minuscules
+            N = [Char[]]'0123456789'                                                # Chiffres
+            S = [Char[]]'!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~'                         # Symboles
         }
     }
 
-    # Build the pool of allowed characters while excluding specified characters for compliance or readability.
+    # Construit la pool de caractères autorisés en excluant les caractères spécifiés pour conformité ou lisibilité.
     $CharSets | ForEach {
         $Tokens = $TokenSets."$_" | ForEach { If ($Exclude -cNotContains $_) { $_ } }
         If ($Tokens) {
             $TokensSet += $Tokens
-            # Ensure at least one character from each mandatory set is included by adding one guaranteed character.
+            # Assure qu’au moins un caractère de chaque ensemble obligatoire est inclus en ajoutant un caractère garanti.
             If ($_ -cle [Char]"Z") { $Chars += $Tokens | Get-Random }
         }
     }
 
-    # Fill the remaining password length with random characters from the combined pool.
+    # Remplit la longueur restante du mot de passe avec des caractères aléatoires issus de la pool combinée.
     While ($Chars.Count -lt $Size) { $Chars += $TokensSet | Get-Random }
 
-    # Shuffle the mandatory characters with the rest to avoid predictable patterns.
+    # Mélange les caractères obligatoires avec les autres pour éviter des motifs prévisibles.
     ($Chars | Sort-Object { Get-Random }) -Join ""
 }
 
-# Create an alias for easier invocation of the password generation function.
-Set-Alias Create-Password Create-String -Description "Generate a random string (password)"
+# Crée un alias pour faciliter l’appel de la fonction de génération de mot de passe.
+Set-Alias Create-Password Create-String -Description "Generer une chaine aleatoire (mot de passe)"
 
-# For each user in the CSV, generate a new password and add it as a property to the user object.
+# Pour chaque utilisateur dans le CSV, génère un nouveau mot de passe et l’ajoute comme propriété à l’objet utilisateur.
 foreach ($row in $userData) { 
     $newPwd = Create-Password 8 ULNS
-    # Add the generated password as a new property named 'Password' to be exported later.
+    # Ajoute le mot de passe généré comme nouvelle propriété nommée 'Password' pour l’export ultérieur.
     $row | Add-Member -MemberType "NoteProperty" -Name Password -Value $newPwd -Force 
 }
 
-# Export the updated user data back to the CSV file, removing quotes to simplify file readability.
+# Exporte les données utilisateurs mises à jour dans le fichier CSV, en supprimant les guillemets pour simplifier la lisibilité.
 $userData | Export-CSV -Path $csvFilePath -Delimiter ';' -NoTypeInformation
