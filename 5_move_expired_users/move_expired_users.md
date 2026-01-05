@@ -38,7 +38,7 @@ powershell
 ```
 
 ```powershell
-.\MoveExpiredUsers.ps1 -csvFilePath "C:\Users\Admin\domain_info.csv"
+5_move_expired_users/move_expired_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
 
 ---

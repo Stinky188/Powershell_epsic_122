@@ -43,7 +43,7 @@ powershell
 ```
 
 ```powershell
-.\SetUserExpiry.ps1 -csvFilePath "C:\Users\Admin\users.csv" -DepartmentToCheck "Production" -TitleToCheck "Assembler" -DaysToAdd -1
+4_update_expiration_date/update_expiration_date.ps1 -csvFilePath "happy_koalas_employees.csv" -DepartmentToCheck "Production" -TitleToCheck "Assembler" -DaysToAdd -1
 ```
 
 ---

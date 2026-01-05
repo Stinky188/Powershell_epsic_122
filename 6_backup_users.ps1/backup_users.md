@@ -38,7 +38,7 @@ powershell
 ```
 
 ```powershell
-.\BackupADUsers.ps1 -csvFilePath "C:\Users\Admin\domain_info.csv"
+6_backup_users.ps1/backup_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
 
 ---

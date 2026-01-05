@@ -33,27 +33,15 @@ Ce script PowerShell permet d’automatiser la création d’utilisateurs dans A
 
 ## Exemples d’utilisation
 
-### Exemple 1 : Création d’utilisateurs à partir du fichier `users.csv`
+### Création d’utilisateurs à partir du fichier `users.csv`
 
 ```powershell
 powershell
 ```
 
 ```powershell
-.\Create-ADUsers.ps1 -csvFilePath "C:\Users\Admin\users.csv"
+3_insert_users/insert_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
-
-### Exemple 2 : Utilisation avec un chemin relatif
-
-```powershell
-powershell
-```
-
-```powershell
-.\Create-ADUsers.ps1 -csvFilePath ".\data\utilisateurs.csv"
-```
-
----
 
 ## État d’avancement
 
