@@ -47,7 +47,7 @@ powershell
 ```
 
 ```powershell
-cd C:\ScriptsAD
+cd C:\ScriptsAD\Powershell_epsic_122_main
 ```
 
 ### Étape 4 : Exécuter un script

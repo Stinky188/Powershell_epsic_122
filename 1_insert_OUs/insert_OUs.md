@@ -34,27 +34,15 @@ Ce script PowerShell permet d’automatiser l’importation d’utilisateurs dep
 
 ## Exemples d’utilisation
 
-### Exemple 1 : Importer un fichier CSV et créer les OU pour le domaine `myAD.com`
+### Importer un fichier CSV et créer les OU pour le domaine `laboad.vd`
 
 ```powershell
 powershell
 ```
 
 ```powershell
-.\VotreScript.ps1 -csvFilePath "C:\Users\admin\users.csv" -domainName "myAD" -topLevelDomain "com"
+1_insert_OUs/insert_OUs.ps1 -csvFilePath "happy_koalas_employees.csv" -domainName "laboad" -topLevelDomain "vd"
 ```
-
-### Exemple 2 : Utilisation avec un fichier CSV par défaut et domaine `example.local`
-
-```powershell
-powershell
-```
-
-```powershell
-.\VotreScript.ps1 -domainName "example" -topLevelDomain "local"
-```
-
----
 
 ## État d’avancement
 
