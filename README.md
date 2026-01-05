@@ -1,6 +1,7 @@
 # Gestion automatisée d’Active Directory avec PowerShell
 
 Ce dépôt vise à simplifier et sécuriser la gestion d’Active Directory par l’automatisation. En suivant ces bonnes pratiques, vous gagnerez en efficacité et fiabilité dans vos opérations administratives.
+Les informations nécessaires pour l'automatisation seront extraites d'un fichier CSV.
 
 ## Télécharger les scripts
 
@@ -63,6 +64,29 @@ powershell
 
 Remplacez le chemin du fichier CSV par celui adapté à votre environnement.
 
+## Structure du fichier CSV
+
+Pour que les scripts fonctionnent correctement, le fichier CSV doit respecter la structure suivante au niveau de l’en-tête (header), avec les colonnes séparées par un point-virgule (`;`) :
+
+```
+FirstName;LastName;UserName;Password;Email;Department;JobTitle
+```
+
+### Détail des colonnes
+
+- **FirstName** : Prénom de l’utilisateur
+- **LastName** : Nom de famille de l’utilisateur
+- **UserName** : Nom d’utilisateur (login)
+- **Password** : Mot de passe temporaire ou initial
+- **Email** : Adresse e-mail professionnelle
+- **Department** : Département auquel l’utilisateur appartient
+- **JobTitle** : Intitulé du poste de l’utilisateur
+
+### Exemple d’une ligne dans le CSV
+
+```
+Jean;Dupont;jdupont;P@ssw0rd;j.dupont@example.com;Informatique;Administrateur Système
+```
 ---
 
 ## Ressources complémentaires
