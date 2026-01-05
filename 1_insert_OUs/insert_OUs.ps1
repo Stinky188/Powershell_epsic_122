@@ -1,3 +1,25 @@
+<#
+SYNOPSIS
+Ce script importe des utilisateurs depuis un fichier CSV, enrichit les données avec des informations de domaine, 
+puis prépare la structure des Unités d’Organisation (OU) dans Active Directory avant la création des comptes.
+
+UTILITÉ
+Automatiser la préparation des données et la création des OUs dans AD en fonction des départements utilisateurs, 
+en assurant que la structure AD reflète bien l’organisation décrite dans le CSV.
+
+AUTEUR
+Alice Dale - alice.dale@eduvaud.ch
+
+LIMITATIONS
+- Le script suppose que le CSV utilise le point-virgule comme délimiteur.
+- La gestion des erreurs est limitée, notamment pour la connexion AD et les droits nécessaires.
+- La création des utilisateurs n’est pas incluse ici, uniquement la préparation des OUs.
+- Le script écrase le fichier CSV original lors de l’export.
+
+EXEMPLES D’UTILISATION
+.\PrepareADStructure.ps1 -csvFilePath "C:\path\to\users.csv" -domainName "eduvaud" -topLevelDomain "ch"
+#>
+
 [CmdletBinding()]
 param(
     [ValidateNotNullOrEmpty()]    
@@ -12,56 +34,62 @@ param(
     [string]$topLevelDomain
 )
 
+# Vérifier que le fichier d’entrée est bien un CSV pour éviter de traiter un format incompatible.
 if ([IO.Path]::GetExtension($csvFilePath) -match ".csv") {
     Write-Output "Le chemin pour le fichier .csv est valable, importation des donnees."
 }
 else {
+    # Stopper l’exécution si le fichier n’est pas un CSV, car la suite du script dépend de ce format.
     Write-Warning "Chemin invalide. Le nom du fichier doit se terminer en .csv"
     exit
 }
 
-# Import CSV data
+# Importer les données utilisateurs en respectant le délimiteur ';' spécifique au format attendu.
 $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 
-# Extract email domain from first email in CSV
+# Extraire le domaine email depuis la première adresse email pour homogénéiser les données. Ceci sera utile pour éviter les doublons d'adresse email par la suite.
+# Attention ! Cette méthode suppose que tous les emails partagent le même domaine, ce qui est le cas dans le csv exemple.
 $emailString = $userData[0].Email
 $findchar = $emailString.IndexOf("@")
 $emailDomain = $emailString.Substring($findchar + 1)
 
 Write-Host "Le nom de l'active directory est $domainName.$topLevelDomain. Le format de l'adresse mail est <user>@$emailDomain. Informations ajoutees au csv."
 
-# Add domain info to each row
+# Ajouter les informations de domaine et TLD à chaque utilisateur pour simplifier les traitements ultérieurs.
 foreach ($row in $userData) { 
     $row | Add-Member -MemberType "NoteProperty" -Name dn -Value $domainName -Force 
     $row | Add-Member -MemberType "NoteProperty" -Name tld -Value $topLevelDomain -Force 
     $row | Add-Member -MemberType "NoteProperty" -Name emailDomain -Value $emailDomain -Force
 }
 
-# Export updated CSV
+# Réécrire le CSV avec les nouvelles informations afin que les prochaines étapes disposent de toutes les données nécessaires.
+# Cette étape écrase le fichier d’origine, il est conseillé d’avoir une sauvegarde stockée autre part.
 $userData | Export-CSV -Path $csvFilePath -Delimiter ';' -NoTypeInformation
 
+# Charger le module ActiveDirectory pour utiliser les cmdlets AD.
+# L’option -ErrorAction Stop permet de bloquer le script immédiatement en cas de problème, évitant des erreurs silencieuses.
 Import-Module ActiveDirectory -ErrorAction Stop
 
+# Recharger le csv pour s’assurer d’avoir la version la plus récente.
 $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 
-#Loop through each row containing user details in the CSV file
 foreach ($organisationalUnit in $userData) {
-    #Read user data from each field in each row and assign the data to a variable as below
     $ou = [string]$organisationalUnit.Department
     $dn = [string]$organisationalUnit.dn
     $tld = [string]$organisationalUnit.tld
 }
-# Check and create root OU if not exists
+
+# Vérifier si une OU racine nommée "OU" existe déjà pour éviter les doublons.
 if (Get-ADOrganizationalUnit -Filter "Name -eq 'OU'") {
     Write-Host "L'OU a la racine a deja ete cree."
 }
 else {
-    #Account will be created in the OU provided by the $OU variable read from the CSV file
+    # Créer l’OU racine sans protection contre suppression accidentelle pour permettre la suppression facile en cas de problèmes.
     New-ADOrganizationalUnit -Name "OU" -ProtectedFromAccidentalDeletion $False
     Write-Host "Creation de l'OU a la racine."
 }
 
-# Create child OUs under the parent "OU"
+# Créer les OUs enfants correspondant aux départements, en évitant la création de doublons.
 foreach ($ou in $userData.Department | Select-Object -Unique) {
     if (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'") {
         Write-Host "L'OU $ou a deja ete cree."

@@ -62,7 +62,7 @@ if (Get-ADOrganizationalUnit -Filter "distinguishedName -eq '$OUfullPath'") {
 }
 else {
     # Créer l’OU "Retired" sous l’OU parent spécifié pour organiser les comptes expirés.
-    New-ADOrganizationalUnit -Name $OUname -Path $OUparent
+    New-ADOrganizationalUnit -Name $OUname -Path $OUparent -ProtectedFromAccidentalDeletion $False
     Write-Host "Created Retired OU"
 }
 
