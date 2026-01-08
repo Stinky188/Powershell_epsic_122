@@ -75,7 +75,7 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
 
 ### Utilisation de la tâche
 
-1. Dans la **Bibliothèque du Planificateur de tâches**, trouvez la tâche créée.
+1. Dans la **Bibliothèque du Planificateur de tâches** (ou **Task Scheduler Library**), trouvez la tâche créée.
 2. Si elle n’apparaît pas, cliquez sur le bouton **Rafraîchir**.
 3. Sélectionnez la tâche et cliquez sur **Propriétés** pour modifier si besoin.
 4. Pour modifier la commande, copiez-collez la ligne PowerShell dans un éditeur de texte, ajustez les chemins, puis remplacez-la dans l’onglet **Actions**.
