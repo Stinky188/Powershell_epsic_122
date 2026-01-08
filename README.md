@@ -2,6 +2,7 @@
 
 Ce dépôt vise à simplifier et sécuriser la gestion d’Active Directory par l’automatisation. En suivant ces bonnes pratiques, vous gagnerez en efficacité et fiabilité dans vos opérations administratives.
 Les informations nécessaires pour l'automatisation seront extraites d'un fichier CSV.
+Les scripts ainsi que les explications associées sont regroupés par dossiers.
 
 ## Télécharger les scripts
 
@@ -29,10 +30,6 @@ Vous pouvez facilement télécharger tous les fichiers du projet sous forme d’
 Par défaut, Windows restreint l’exécution des scripts PowerShell. Pour permettre l’exécution temporaire de scripts, tapez la commande suivante :
 
 ```powershell
-powershell
-```
-
-```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
@@ -43,20 +40,12 @@ Cette commande autorise l’exécution des scripts uniquement pour la session Po
 Dans la fenêtre PowerShell, naviguez jusqu’au dossier contenant les scripts. Par exemple :
 
 ```powershell
-powershell
-```
-
-```powershell
 cd C:\ScriptsAD\Powershell_epsic_122-main
 ```
 
 ### Étape 4 : Exécuter un script
 
 Pour lancer un script, tapez son nom précédé de `.\`, par exemple :
-
-```powershell
-powershell
-```
 
 ```powershell
 .\BackupADUsers.ps1 -csvFilePath "C:\Chemin\vers\domain_info.csv"
