@@ -40,18 +40,6 @@ powershell
 2_generate_passwords/generate_passwords.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
 
-### Exemple 2 : Utilisation avec un chemin relatif
-
-```powershell
-powershell
-```
-
-```powershell
-.\GeneratePasswords.ps1 -csvFilePath ".\data\utilisateurs.csv"
-```
-
----
-
 ## État d’avancement
 
 - [x] Validation du fichier CSV en entrée
