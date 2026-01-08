@@ -43,16 +43,16 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
 
 ### Installation
 
-1. Appuyez sur la touche Windows (ou cliquez sur l’icône Windows en bas à gauche) et cherchez **Planification de tâches** (**Task Scheduler** en anglais). Lancez l’application.
+1. Appuyez sur la touche Windows (ou cliquez sur l’icône Windows en bas à gauche) et cherchez **Planification de tâches** (ou **Task Scheduler**). Lancez l’application.
     
-2. Dans le volet droit, cliquez sur **Créer une tâche**.
+2. Dans le volet droit, cliquez sur **Créer une tâche** (ou **Create Task**).
     
 3. Donnez un nom à la tâche, par exemple "Sauvegarde AD Utilisateurs".
     
-4. Dans l’onglet **Déclencheurs**, cliquez sur **Nouveau…**, puis :
+4. Dans l’onglet **Déclencheurs** (ou **Triggers**), cliquez sur **Nouveau…**, puis :
     
-    - Choisissez **Quotidien**.
-    - Réglez l’heure sur **23:00**.
+    - Choisissez **Quotidien** (ou **Daily**).
+    - Réglez l’heure sur **23:00:00**.
     - Cliquez sur **OK**.
 5. Dans l’onglet **Actions**, cliquez sur **Nouveau…** puis :
     
@@ -61,10 +61,11 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
     
 
 6. ```
-    -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\chemin\vers\BackupADUsers.ps1' -csvFilePath 'C:\chemin\vers\domain_info.csv'"
+     -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\ScriptsAD\Powershell_epsic_122-main\6_backup_users.ps1' -csvFilePath 'C:\ScriptsAD\Powershell_epsic_122-main\happy_koalas_employees.csv'"
     ```
     
     - Veillez à conserver les guillemets simples autour des chemins.
+    - Si vous devez modifier l'emplacement des scripts ou du csv, il est recommandé de modifier la commande dans un éditeur de texte externe puis de le recopier dans le planificateur de tâches.
 7. Cliquez sur **OK** pour valider l’action.
     
 8. Vérifiez les autres paramètres de la tâche (exécution avec les droits administrateurs si nécessaire).
