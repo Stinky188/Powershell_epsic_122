@@ -1,1 +1,5 @@
+# Ignore other csv files
 *.csv
+
+# Don't ignore template csv file
+!happy_koalas_employees.csv
