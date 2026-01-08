@@ -61,7 +61,7 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
     
 
 6. ```
-    -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\ScriptsAD\Powershell_epsic_122-main\6_backup_users\backup_users.ps1' -csvFilePath 'C:\ScriptsAD\Powershell_epsic_122-main\happy_koalas_employees.csv'"
+    -ExecutionPolicy Bypass -Command "& 'C:\ScriptsAD\Powershell_epsic_122-main\6_backup_users\backup_users.ps1' -csvFilePath 'C:\ScriptsAD\Powershell_epsic_122-main\happy_koalas_employees.csv'"
     ```
     
     - Veillez à conserver les guillemets simples autour des chemins.
