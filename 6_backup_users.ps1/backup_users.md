@@ -43,7 +43,7 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
 
 ### Installation
 
-1. Appuyez sur la touche Windows (ou cliquez sur l’icône Windows en bas à gauche) et cherchez **Planification de tâches**. Lancez l’application.
+1. Appuyez sur la touche Windows (ou cliquez sur l’icône Windows en bas à gauche) et cherchez **Planification de tâches** (**Task Scheduler** en anglais). Lancez l’application.
     
 2. Dans le volet droit, cliquez sur **Créer une tâche**.
     
