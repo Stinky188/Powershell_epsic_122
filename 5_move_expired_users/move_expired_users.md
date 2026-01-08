@@ -34,26 +34,8 @@ Ce script PowerShell automatise la gestion des comptes Active Directory expirés
 ### Exemple : déplacer les comptes expirés vers l’OU "Retired"
 
 ```powershell
-powershell
-```
-
-```powershell
 5_move_expired_users/move_expired_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
-
----
-
-## État d’avancement
-
-- [x] Validation du fichier CSV en entrée
-- [x] Chargement du module Active Directory
-- [x] Vérification et création conditionnelle de l’OU "Retired"
-- [x] Recherche des comptes expirés non désactivés
-- [x] Déplacement des comptes dans l’OU dédiée
-- [ ] Gestion avancée des erreurs (droits insuffisants, comptes introuvables)
-- [ ] Paramétrage dynamique des noms d’OU et chemins LDAP
-
----
 
 ## Dépendances / prérequis
 

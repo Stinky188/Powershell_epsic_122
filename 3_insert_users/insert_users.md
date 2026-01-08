@@ -36,26 +36,8 @@ Ce script PowerShell permet d’automatiser la création d’utilisateurs dans A
 ### Création d’utilisateurs à partir du fichier `users.csv`
 
 ```powershell
-powershell
-```
-
-```powershell
 3_insert_users/insert_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
-
-## État d’avancement
-
-- [x] Validation du fichier CSV en entrée
-- [x] Import des données utilisateurs depuis le CSV
-- [x] Gestion des doublons de noms d’utilisateur
-- [x] Création des comptes utilisateurs dans Active Directory
-- [x] Export des utilisateurs créés dans le fichier CSV
-- [ ] Gestion avancée des erreurs et validation des données
-- [ ] Paramétrage dynamique du domaine principal (`$companyDomain`)
-- [ ] Sauvegarde automatique du fichier CSV avant écrasement
-
----
-
 ## Dépendances / prérequis
 
 - PowerShell version 5.1 ou supérieure

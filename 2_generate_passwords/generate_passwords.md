@@ -33,25 +33,8 @@ Ce script PowerShell génère des mots de passe aléatoires sécurisés pour cha
 ### Exemple 1 : Générer des mots de passe pour les utilisateurs dans `users.csv`
 
 ```powershell
-powershell
-```
-
-```powershell
 2_generate_passwords/generate_passwords.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
-
-## État d’avancement
-
-- [x] Validation du fichier CSV en entrée
-- [x] Import des données utilisateurs depuis le CSV
-- [x] Génération de mots de passe aléatoires incluant plusieurs types de caractères
-- [x] Ajout des mots de passe dans la structure de données
-- [x] Export du fichier CSV mis à jour sans guillemets inutiles
-- [ ] Ajout de la gestion des erreurs (fichier introuvable, format incorrect)
-- [ ] Paramétrage de la longueur et des types de caractères des mots de passe
-- [ ] Ajout de logs détaillés pour le suivi des opérations
-
----
 
 ## Dépendances / prérequis
 

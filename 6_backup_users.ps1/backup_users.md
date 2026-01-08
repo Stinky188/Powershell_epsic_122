@@ -34,10 +34,6 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
 ### Exemple : exporter les utilisateurs AD et sauvegarder les données
 
 ```powershell
-powershell
-```
-
-```powershell
 6_backup_users.ps1/backup_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
 
@@ -87,18 +83,6 @@ powershell
     - La politique d’exécution PowerShell (`ExecutionPolicy`) : la commande ci-dessus contourne cette limite pour ce script uniquement.
     - L’exactitude des chemins et des noms de fichiers.
     - Les permissions nécessaires pour exécuter le script et accéder aux fichiers.
-
----
-
-## État d’avancement
-
-- [x] Import dynamique des unités d’organisation à partir du CSV
-- [x] Export des utilisateurs AD avec propriétés sélectionnées
-- [x] Ajout des informations de domaine dans le CSV exporté
-- [x] Compression du fichier CSV en archive ZIP
-- [x] Création automatique du dossier de sauvegarde si absent
-- [ ] Gestion avancée des erreurs (droits, accès fichiers)
-- [ ] Notification en cas de succès ou d’échec via mail ou log
 
 ---
 
