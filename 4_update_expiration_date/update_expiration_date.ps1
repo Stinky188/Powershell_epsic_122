@@ -82,11 +82,11 @@ function Set-ADUserExpiryDate {
         $expiryDate = (Get-Date).AddDays($daysToAdd)
         # Appliquer la date d'expiration sur le compte AD, ce qui automatise la désactivation future.
         Set-ADAccountExpiration -Identity $username -DateTime $expiryDate
-        Write-Host "Date d'expiration définie pour $username : $expiryDate"
+        Write-Host "Date d'expiration definie pour $username : $expiryDate"
     }
     else {
         # Informer que l'utilisateur ne correspond pas aux critères permet de suivre le traitement.
-        Write-Host "Utilisateur $username ne correspond pas aux critères Département='$department' et Titre='$title'."
+        Write-Host "Utilisateur $username ne correspond pas aux criteres Departement='$department' et Titre='$title'."
     }
 }
 
