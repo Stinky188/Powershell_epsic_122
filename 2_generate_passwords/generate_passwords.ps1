@@ -78,8 +78,7 @@ foreach ($row in $userData) {
     $newPwd = Create-Password 8 ULNS
     # Ajoute le mot de passe généré comme nouvelle propriété nommée 'Password' pour l’export ultérieur.
     $row | Add-Member -MemberType "NoteProperty" -Name Password -Value $newPwd -Force 
-    Write-Host "Creation de mots de passe et ajout au csv."
 }
-
+Write-Host "Mots de passe crees avec succes!"
 # Exporte les données utilisateurs mises à jour dans le fichier CSV, en supprimant les guillemets pour simplifier la lisibilité.
 $userData | Export-CSV -Path $csvFilePath -Delimiter ';' -Encoding utf8 -NoTypeInformation
