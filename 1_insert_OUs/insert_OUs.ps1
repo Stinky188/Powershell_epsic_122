@@ -63,7 +63,7 @@ foreach ($row in $userData) {
 
 # Réécrire le CSV avec les nouvelles informations afin que les prochaines étapes disposent de toutes les données nécessaires.
 # Cette étape écrase le fichier d’origine, il est conseillé d’avoir une sauvegarde stockée autre part.
-$userData | Export-CSV -Path $csvFilePath -Delimiter ';' -NoTypeInformation
+$userData | Export-CSV -Path $csvFilePath -Delimiter ';' -Encoding utf8 -NoTypeInformation
 
 # Charger le module ActiveDirectory pour utiliser les cmdlets AD.
 # L’option -ErrorAction Stop permet de bloquer le script immédiatement en cas de problème, évitant des erreurs silencieuses.

@@ -114,7 +114,7 @@ Get-ADUser -filter * -properties $properties -SearchBase "OU=OU,DC=$dn,DC=$tld" 
         Name = 'Department'; Expression = {$_.department}
     }, @{
         Name = 'JobTitle'; Expression = {$_.title}
-    } | Export-CSV -path $csvFilePath -Delimiter ';' -NoTypeInformation
+    } | Export-CSV -path $csvFilePath -Delimiter ';' -Encoding utf8 -NoTypeInformation
 
 # Réimporter le CSV permet d’ajouter des propriétés supplémentaires sans perdre les données existantes.
 $reimport = Import-Csv -Path $csvFilePath -Delimiter ';'
@@ -126,4 +126,4 @@ foreach ($row in $reimport) {
 }
 
 # Export final du CSV, prêt à être utilisé dans d’autres processus ou pour archivage.
-$reimport | Export-CSV -path $csvFilePath -Delimiter ';' -NoTypeInformation
+$reimport | Export-CSV -path $csvFilePath -Delimiter ';' -Encoding utf8 -NoTypeInformation

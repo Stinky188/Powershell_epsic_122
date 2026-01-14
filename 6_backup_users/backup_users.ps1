@@ -93,7 +93,7 @@ Select-Object -Property @{
 }, @{
     Name = 'JobTitle'; Expression = { $_.title }
 } |
-Export-CSV -Path $csvOutputPath -Delimiter ';' -NoTypeInformation
+Export-CSV -Path $csvOutputPath -Delimiter ';' -Encoding utf8 -NoTypeInformation
 
 # Réimporter le CSV pour ajouter les propriétés dn et tld à chaque ligne
 $reimport = Import-Csv -Path $csvOutputPath -Delimiter ';'
@@ -104,7 +104,7 @@ foreach ($row in $reimport) {
 }
 
 # Export final avec les nouvelles propriétés ajoutées
-$reimport | Export-CSV -Path $csvOutputPath -Delimiter ';' -NoTypeInformation
+$reimport | Export-CSV -Path $csvOutputPath -Delimiter ';' -Encoding utf8 -NoTypeInformation
 
 # Création de l’archive ZIP contenant le CSV exporté
 Compress-Archive -Path $csvOutputPath -DestinationPath (Join-Path $path $csvOutputName) -Force

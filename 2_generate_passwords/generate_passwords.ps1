@@ -82,4 +82,4 @@ foreach ($row in $userData) {
 }
 
 # Exporte les données utilisateurs mises à jour dans le fichier CSV, en supprimant les guillemets pour simplifier la lisibilité.
-$userData | Export-CSV -Path $csvFilePath -Delimiter ';' -NoTypeInformation
+$userData | Export-CSV -Path $csvFilePath -Delimiter ';' -Encoding utf8 -NoTypeInformation
