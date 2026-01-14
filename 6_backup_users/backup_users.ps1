@@ -1,3 +1,23 @@
+<#
+SYNOPSIS
+Ce script permet de faire une sauvegarde de l'état de l'AD.
+
+DESCRIPTION
+Le script permet d’exporter les informations des utilisateurs AD listés dans un fichier CSV. 
+Il crée un fichier CSV contenant les données, puis compresse ce fichier dans une archive ZIP sous C:\backups\.
+
+AUTRICE
+Alice Dale - alice.dale@eduvaud.ch
+
+LIMITATIONS
+- Le script suppose que le CSV spécifié dans les paramètres utilise le point-virgule (';') comme séparateur.
+- Ce script requiert que le script "insert_OUs.ps1" ait été exécuté au préalable.
+
+EXEMPLE D'UTILISATION
+6_backup_users/backup_users.ps1 -csvFilePath "happy_koalas_employees.csv"
+# Référez-vous au README pour des informations sur l'automatisation de ce script.
+#>
+
 [CmdletBinding()]
 param(
     [ValidateNotNullOrEmpty()]    
@@ -16,7 +36,7 @@ else {
 # Le module Active Directory est nécessaire pour interagir avec AD
 Import-Module ActiveDirectory -ErrorAction Stop
 
-# Propriétés à récupérer pour le rapport AD
+# Propriétés à récupérer pour le csv d'export de l'AD
 $properties = @(
     'givenName',
     'surname',
@@ -26,7 +46,7 @@ $properties = @(
     'department'
 )
 
-# Import des données utilisateurs depuis le CSV
+# Importation du CSV pour avoir les informations sur le nom de l'AD et les départements dans lesquels extraire des informations
 $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 
 # Extraction des informations de domaine depuis le CSV pour construire le chemin LDAP
@@ -41,24 +61,24 @@ $OUs = foreach ($dept in $uniqueDepartments) {
     "OU=$dept,OU=OU,DC=$dn,DC=$tld"
 }
 
-# Récupération des utilisateurs AD dans chacun des OUs dynamiques
+# Récupération des utilisateurs AD dans chacun des OUs
 $ADReport = foreach ($OU in $OUs) {
     Get-ADUser -Filter * -Properties $properties -SearchBase $OU
 }
 
-# Répertoire de sauvegarde des exports
+# Répertoire de sauvegarde des exports, si ce dossier n'existe pas, on le crée
 $path = "C:\backups\"
 If (-not(test-path -PathType container $path)) {
     New-Item -ItemType Directory -Path $path
 }
 
-# Nom du fichier CSV et ZIP avec date
+# Nom du fichier CSV et ZIP avec date. Ces variables seront utilisées pour savoir où exporter le csv et en informer l'utilisateur
 $csvOutputName = "$((Get-Date).ToString("yyyy-MM-dd"))_users"
 $csvExtension = ".csv"
 $zipExtension = ".zip"
 $csvOutputPath = Join-Path $path "$csvOutputName$csvExtension"
 
-# Export des données AD récupérées vers CSV avec renommage des colonnes pour clarté
+# Export des données AD récupérées vers CSV avec renommage des colonnes pour qu'elles correspondent au csv original
 $ADReport |
 Select-Object -Property @{
     Name = 'FirstName'; Expression = { $_.givenName }

@@ -2,7 +2,7 @@
 
 ## Description
 
-Ce script PowerShell permet d’automatiser l’importation d’utilisateurs depuis un fichier CSV et la création d’Unités d’Organisation (OU) dans un Active Directory (AD). Il ajoute également des informations sur le domaine et le TLD (Top-Level Domain) aux données importées, et crée une structure d’OU basée sur les départements présents dans le CSV. Ce script facilite la gestion et la structuration des comptes utilisateurs dans un environnement AD.
+Ce script PowerShell permet d’automatiser la création d’Unités d’Organisation (OU) dans un Active Directory (AD). Il ajoute des informations sur le domaine et le TLD (Top-Level Domain) aux données importées, extrait le nom de domaine pour les adresses email des utilisateurs et crée une structure d’OU basée sur les départements présents dans le CSV.
 
 ---
 
@@ -10,9 +10,10 @@ Ce script PowerShell permet d’automatiser l’importation d’utilisateurs dep
 
 ### Entrées nécessaires
 
-- Un fichier CSV contenant les données utilisateurs, avec au minimum une colonne `Email` et une colonne `Department`.
-- Le nom de domaine (domain name) de l’Active Directory (exemple : `myAD`).
-- Le TLD du domaine (exemple : `com`).
+- Un fichier CSV contenant les données utilisateurs, avec au minimum les colonnes suivantes: FirstName;LastName;UserName;Password;Email;Department;JobTitle
+- Le fichier CSV doit être au format texte, encodé en UTF-8, avec un séparateur `;`.
+- Le nom de domaine (domain name) de l’Active Directory (exemple : `laboad`).
+- Le TLD du domaine (exemple : `vd`).
 
 ### Sorties
 
@@ -41,9 +42,9 @@ Ce script PowerShell permet d’automatiser l’importation d’utilisateurs dep
 ```
 ## Dépendances / prérequis
 
-- PowerShell version 5.1 ou supérieure (PowerShell Core recommandé pour compatibilité multiplateforme)
-- Module ActiveDirectory installé et accessible (`Import-Module ActiveDirectory`)
-- Droits administratifs sur l’Active Directory pour créer des OU
+- PowerShell (présent de base sur Windows Server)
+- Module ActiveDirectory installé depuis le script (`Import-Module ActiveDirectory`)
+- Droits administratifs sur l’Active Directory
 - Fichier CSV encodé en UTF-8 avec séparateur `;`
 
 ---

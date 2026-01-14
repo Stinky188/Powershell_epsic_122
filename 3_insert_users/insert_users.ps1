@@ -1,23 +1,22 @@
 <#
-.SYNOPSIS
+SYNOPSIS
 Ce script automatise la création d’utilisateurs dans Active Directory à partir d’un fichier CSV, en garantissant l’unicité des noms d’utilisateur et en structurant les comptes dans des unités d’organisation (OU) selon les départements.
 
-.DESCRIPTION
+DESCRIPTION
 Le script importe les données utilisateurs depuis un CSV, adapte les noms d’utilisateur pour éviter les doublons dans AD, crée les comptes avec les propriétés essentielles, puis exporte la liste mise à jour des utilisateurs dans le même fichier CSV. La structure LDAP est construite dynamiquement pour s’adapter à l’environnement cible.
 
-.AUTHOR
-TonNom - support@exemple.com
+AUTRICE
+Alice Dale - alice.dale@eduvaud.ch
 
-.LIMITATIONS
-- Le script suppose que la variable $companyDomain est définie dans l’environnement d’exécution.
-- Aucune gestion avancée des erreurs n’est implémentée, ce qui peut poser problème en cas de fichiers corrompus ou droits insuffisants.
-- Le chemin LDAP pour les OU est codé dans le script, une amélioration possible serait de le rendre paramétrable.
-- Le script écrase le fichier CSV d’origine sans sauvegarde préalable.
+LIMITATIONS
+- Le script suppose que le CSV utilise le point-virgule (';') comme séparateur.
+- Le script écrase le fichier CSV original, il est donc recommandé de faire une sauvegarde.
+- Ce script requiert que le script "insert_OUs.ps1" ait été exécuté au préalable.
+- Ce script ne doit pas être exécuté plus d'une fois, car les utilisateurs seront créés à double avec un chiffre pour les distinguer.
+- Les noms affichés dans l'AD correspondent au nom d'utilisateur (première lettre du prénom + nom de famille).
 
-.EXAMPLES
-# Exemple d’exécution avec un fichier CSV spécifique
-.\Create-ADUsers.ps1 -csvFilePath "C:\Users\Admin\users.csv"
-# Le fichier users.csv doit contenir au minimum les colonnes FirstName, LastName, UserName, emailDomain, JobTitle, Department, Password, dn et tld.
+EXEMPLE D'UTILISATION
+3_insert_users/insert_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 #>
 
 [CmdletBinding()]
@@ -68,7 +67,7 @@ foreach ($User in $userData) {
         GivenName             = $GivenName
         Surname               = $Surname
         DisplayName           = "$Surname $GivenName"
-        UserPrincipalName     = "$Username@$companyDomain"  # $companyDomain doit être défini en amont pour refléter le domaine AD.
+        UserPrincipalName     = "$Username@$emailDomain"
         EmailAddress          = "$Username@$emailDomain"
         Enabled               = $True
         ChangePasswordAtLogon = $true
@@ -126,5 +125,5 @@ foreach ($row in $reimport) {
     $row | Add-Member -MemberType "NoteProperty" -Name tld -Value $tld -Force 
 }
 
-# Export final du CSV enrichi, prêt à être utilisé dans d’autres processus ou pour archivage.
+# Export final du CSV, prêt à être utilisé dans d’autres processus ou pour archivage.
 $reimport | Export-CSV -path $csvFilePath -Delimiter ';' -NoTypeInformation

@@ -7,19 +7,17 @@ Le script importe un fichier CSV pour récupérer les informations de domaine n�
 Il vérifie l’existence de l’OU "Retired" dans l’Active Directory et la crée si elle n’existe pas. 
 Ensuite, il récupère tous les comptes expirés non désactivés et les déplace dans cette OU, facilitant ainsi la gestion et le suivi des comptes obsolètes.
 
-AUTHOR
+AUTRICE
 Alice Dale - alice.dale@eduvaud.ch
 
 LIMITATIONS
-- Le script suppose que le fichier CSV contient les colonnes 'dn' et 'tld' correctement renseignées.
-- Aucune gestion avancée des erreurs n’est présente pour la récupération ou le déplacement des comptes.
-- Le script ne vérifie pas si les comptes sont déjà dans l’OU cible avant de les déplacer.
-- L’OU parent "OU=OU" est codée en dur, ce qui limite la flexibilité selon les environnements AD.
+- Le script suppose que le CSV utilise le point-virgule (';') comme séparateur.
+- Le script écrase le fichier CSV original, il est donc recommandé de faire une sauvegarde.
+- Ce script requiert que le script "insert_OUs.ps1" ait été exécuté au préalable.
+- Ce script ne vérifie pas si les utilisateurs ont déjà été déplacés.
 
-EXAMPLES
-# Exemple d’exécution :
-.\MoveExpiredUsers.ps1 -csvFilePath "C:\Users\Admin\domain_info.csv"
-# Ce fichier CSV doit contenir les colonnes 'dn' et 'tld' pour construire le chemin LDAP.
+EXEMPLE D'UTILISATION
+5_move_expired_users/move_expired_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 #>
 
 [CmdletBinding()]

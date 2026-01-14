@@ -2,7 +2,7 @@
 
 ## Description
 
-Ce script PowerShell permet de définir une date d’expiration sur les comptes Active Directory d’utilisateurs spécifiques, en fonction de leur département et de leur titre, à partir d’une liste d’utilisateurs importée depuis un fichier CSV. Il facilite la gestion des comptes temporaires ou sensibles en automatisant la désactivation programmée.
+Ce script PowerShell permet de définir une date d’expiration sur les comptes Active Directory d’utilisateurs spécifiques, en fonction de leur département et de leur titre, à partir d’une liste d’utilisateurs importée depuis un fichier CSV.
 
 ---
 
@@ -10,16 +10,12 @@ Ce script PowerShell permet de définir une date d’expiration sur les comptes 
 
 ### Entrées nécessaires
 
-- Un fichier CSV contenant les noms d’utilisateur dans une colonne `Username`.
-- Les paramètres suivants doivent être spécifiés lors de l’exécution du script :
-    - Le département cible (exemple : `Production`)
-    - Le titre cible (exemple : `Assembler`)
-    - Le nombre de jours avant expiration (exemple : `-1` pour une expiration immédiate ou dans le passé)
+- Un fichier CSV contenant les données utilisateurs, avec au minimum les colonnes suivantes: FirstName;LastName;UserName;Password;Email;Department;JobTitle;dn;tld
+- Le fichier CSV doit être au format texte, encodé en UTF-8, avec un séparateur `;`.
 
 ### Ce que le script produit
 
 - Pour chaque utilisateur du CSV dont le département et le titre correspondent aux critères, la date d’expiration du compte Active Directory est définie à la date actuelle plus le nombre de jours spécifié.
-- Un message est affiché pour chaque compte traité, indiquant si la date d’expiration a été appliquée ou si l’utilisateur ne correspond pas aux critères.
 
 ---
 
@@ -30,13 +26,11 @@ Ce script PowerShell permet de définir une date d’expiration sur les comptes 
 |`-csvFilePath`|Chemin complet vers le fichier CSV contenant les noms d’utilisateur.|Chemin valide vers un fichier `.csv`|Oui|
 |`-DepartmentToCheck`|Département cible pour appliquer la date d’expiration (exemple : `Production`).|Chaîne de caractères|Oui|
 |`-TitleToCheck`|Titre cible pour appliquer la date d’expiration (exemple : `Assembler`).|Chaîne de caractères|Oui|
-|`-DaysToAdd`|Nombre de jours à ajouter à la date actuelle pour fixer la date d’expiration. Peut être négatif.|Entier (exemple : `-1`)|Oui|
+|`-DaysToAdd`|Nombre de jours à ajouter à la date actuelle pour fixer la date d’expiration.|Entier (exemple : `-1`)|Oui|
 
 ---
 
 ## Exemples d’utilisation
-
-### Exemple : appliquer une date d’expiration immédiate aux utilisateurs du département "Production" avec le titre "Assembler"
 
 ```powershell
 4_update_expiration_date/update_expiration_date.ps1 -csvFilePath "happy_koalas_employees.csv" -DepartmentToCheck "Production" -TitleToCheck "Assembler" -DaysToAdd -1
@@ -44,11 +38,10 @@ Ce script PowerShell permet de définir une date d’expiration sur les comptes 
 
 ## Dépendances / prérequis
 
-- PowerShell version 5.1 ou supérieure
-- Module ActiveDirectory installé et accessible (`Import-Module ActiveDirectory`)
-- Droits suffisants pour modifier les comptes dans Active Directory
+- PowerShell (présent de base sur Windows Server)
+- Module ActiveDirectory installé depuis le script (`Import-Module ActiveDirectory`)
+- Droits administratifs sur l’Active Directory
 - Fichier CSV encodé en UTF-8 avec séparateur `;`
-- Le fichier CSV doit contenir une colonne `Username` correspondant au SamAccountName dans AD
 
 ---
 

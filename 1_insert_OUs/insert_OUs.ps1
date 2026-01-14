@@ -1,23 +1,22 @@
 <#
 SYNOPSIS
-Ce script importe des utilisateurs depuis un fichier CSV, enrichit les données avec des informations de domaine, 
+Ce script importe des utilisateurs depuis un fichier CSV, ajoute les informations de domaine, 
 puis prépare la structure des Unités d’Organisation (OU) dans Active Directory avant la création des comptes.
 
 UTILITÉ
 Automatiser la préparation des données et la création des OUs dans AD en fonction des départements utilisateurs, 
 en assurant que la structure AD reflète bien l’organisation décrite dans le CSV.
 
-AUTEUR
+AUTRICE
 Alice Dale - alice.dale@eduvaud.ch
 
 LIMITATIONS
 - Le script suppose que le CSV utilise le point-virgule comme délimiteur.
-- La gestion des erreurs est limitée, notamment pour la connexion AD et les droits nécessaires.
-- La création des utilisateurs n’est pas incluse ici, uniquement la préparation des OUs.
-- Le script écrase le fichier CSV original lors de l’export.
+- Le script écrase le fichier CSV original, il est donc recommandé de faire une sauvegarde.
+- Ce script suppose que les utilisateurs ont des adresses email avec un nom de domaine identique.
 
-EXEMPLES D’UTILISATION
-.\PrepareADStructure.ps1 -csvFilePath "C:\path\to\users.csv" -domainName "eduvaud" -topLevelDomain "ch"
+EXEMPLE D'UTILISATION
+1_insert_OUs/insert_OUs.ps1 -csvFilePath "happy_koalas_employees.csv" -domainName "laboad" -topLevelDomain "vd"
 #>
 
 [CmdletBinding()]

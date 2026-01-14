@@ -10,16 +10,15 @@ Ce script PowerShell permet d’automatiser la création d’utilisateurs dans A
 
 ### Entrées nécessaires
 
-- Un fichier CSV contenant les informations utilisateurs, avec au minimum les colonnes suivantes :  
-    `FirstName`, `LastName`, `UserName`, `emailDomain`, `JobTitle`, `Department`, `Password`, `dn`, `tld`.
-- La variable `$companyDomain` doit être définie dans l’environnement d’exécution du script, correspondant au domaine principal AD (exemple : `mycompany.com`).
+- Un fichier CSV contenant les données utilisateurs, avec au minimum les colonnes suivantes: FirstName;LastName;UserName;Password;Email;Department;JobTitle;dn;tld;emailDomain
+- Le fichier CSV doit être au format texte, encodé en UTF-8, avec un séparateur `;`.
 
 ### Ce que le script produit
 
-- Création des comptes utilisateurs dans AD avec les propriétés essentielles renseignées.
+- Création des comptes utilisateurs dans AD avec les propriétés renseignées.
 - Gestion automatique des doublons de noms d’utilisateur en ajoutant un suffixe numérique.
 - Organisation des utilisateurs dans des OU correspondant aux départements.
-- Export du fichier CSV mis à jour avec les utilisateurs créés et enrichi des informations de domaine.
+- Export du fichier CSV mis à jour avec les utilisateurs créés et les informations de domaine.
 
 ---
 
@@ -33,18 +32,15 @@ Ce script PowerShell permet d’automatiser la création d’utilisateurs dans A
 
 ## Exemples d’utilisation
 
-### Création d’utilisateurs à partir du fichier `users.csv`
-
 ```powershell
 3_insert_users/insert_users.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
 ## Dépendances / prérequis
 
-- PowerShell version 5.1 ou supérieure
-- Module ActiveDirectory installé et accessible (`Import-Module ActiveDirectory`)
-- Droits administratifs suffisants pour créer des utilisateurs et des OU dans Active Directory
+- PowerShell (présent de base sur Windows Server)
+- Module ActiveDirectory installé depuis le script (`Import-Module ActiveDirectory`)
+- Droits administratifs sur l’Active Directory
 - Fichier CSV encodé en UTF-8 avec séparateur `;`
-- Variable d’environnement `$companyDomain` définie avant l’exécution du script
 
 ---
 

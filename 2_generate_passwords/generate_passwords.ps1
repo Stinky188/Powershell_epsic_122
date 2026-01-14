@@ -7,20 +7,16 @@ Le script lit les données utilisateurs depuis un fichier CSV, génère un mot d
 en utilisant une fonction personnalisable, puis exporte les données mises à jour dans le CSV. Il garantit que les mots de passe 
 générés contiennent des ensembles de caractères obligatoires (majuscules, minuscules, chiffres, symboles) pour une meilleure sécurité.
 
-AUTEUR
+AUTRICE
 Alice Dale - alice.dale@eduvaud.ch
 
 LIMITATIONS
 - Le script suppose que le CSV utilise le point-virgule (';') comme séparateur.
-- La longueur des mots de passe et les ensembles de caractères sont actuellement fixes mais pourraient être paramétrés.
 - Le script écrase le fichier CSV original, il est donc recommandé de faire une sauvegarde.
-- Aucune gestion d’erreur n’est implémentée pour l’accès au fichier ou les problèmes de format CSV.
+- Le script part du principe que les mots de passe n'existent pas déjà dans le csv.
 
-EXEMPLES
-# Générer des mots de passe pour les utilisateurs dans users.csv avec les paramètres par défaut
-.\GeneratePasswords.ps1 -csvFilePath "C:\path\to\users.csv"
-
-# La description de l’utilisation et les entrées/sorties attendues sont dans le fichier README.
+EXEMPLE D'UTILISATION
+2_generate_passwords/generate_passwords.ps1 -csvFilePath "happy_koalas_employees.csv"
 #>
 
 [CmdletBinding()]
@@ -82,6 +78,7 @@ foreach ($row in $userData) {
     $newPwd = Create-Password 8 ULNS
     # Ajoute le mot de passe généré comme nouvelle propriété nommée 'Password' pour l’export ultérieur.
     $row | Add-Member -MemberType "NoteProperty" -Name Password -Value $newPwd -Force 
+    Write-Host "Creation de mots de passe et ajout au csv."
 }
 
 # Exporte les données utilisateurs mises à jour dans le fichier CSV, en supprimant les guillemets pour simplifier la lisibilité.

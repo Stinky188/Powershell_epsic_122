@@ -2,7 +2,7 @@
 
 ## Description
 
-Ce script PowerShell permet d’exporter les informations des utilisateurs Active Directory présents dans les unités d’organisation (OU) listées dynamiquement à partir d’un fichier CSV. Il crée un fichier CSV contenant les données des utilisateurs, enrichi des informations de domaine, puis compresse ce fichier dans une archive ZIP pour archivage.
+Ce script PowerShell permet d’exporter les informations des utilisateurs Active Directory présents dans les unités d’organisation (OU) listées dans un fichier CSV. Il crée un nouveau fichier CSV contenant les données des utilisateurs avec les informations de domaine, puis compresse ce fichier dans une archive ZIP.
 
 ---
 
@@ -10,13 +10,13 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
 
 ### Entrées nécessaires
 
-- Un fichier CSV contenant au minimum les colonnes `dn`, `tld` et `Department` correspondant à la structure de votre Active Directory.
-- Le fichier CSV doit être encodé en UTF-8 et utiliser le point-virgule (`;`) comme séparateur.
+- Un fichier CSV contenant les données utilisateurs, avec au minimum les colonnes suivantes: FirstName;LastName;UserName;Password;Email;Department;JobTitle;dn;tld
+- Le fichier CSV doit être au format texte, encodé en UTF-8, avec un séparateur `;`.
 
 ### Ce que le script produit
 
 - Un fichier CSV exporté dans le dossier `C:\backups\`, nommé avec la date du jour (exemple : `2026-01-05_users.csv`).
-- Une archive ZIP contenant ce fichier CSV pour faciliter la conservation et le transfert.
+- Une archive ZIP contenant ce fichier CSV.
 - Affichage dans la console de la confirmation de la sauvegarde.
 
 ---
@@ -30,8 +30,6 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
 ---
 
 ## Exemples d’utilisation
-
-### Exemple : exporter les utilisateurs AD et sauvegarder les données
 
 ```powershell
 6_backup_users/backup_users.ps1 -csvFilePath "happy_koalas_employees.csv"
@@ -89,11 +87,11 @@ Ce script PowerShell permet d’exporter les informations des utilisateurs Activ
 
 ## Dépendances / prérequis
 
-- PowerShell version 5.1 ou supérieure
-- Module ActiveDirectory installé et accessible (`Import-Module ActiveDirectory`)
-- Droits suffisants pour interroger Active Directory et écrire dans le dossier de sauvegarde
+- PowerShell (présent de base sur Windows Server)
+- Module ActiveDirectory installé depuis le script (`Import-Module ActiveDirectory`)
+- Droits administratifs sur l’Active Directory
 - Fichier CSV encodé en UTF-8 avec séparateur `;`
-- Planificateur de tâches Windows disponible et accessible
+- Planificateur de tâches Windows
 
 ---
 

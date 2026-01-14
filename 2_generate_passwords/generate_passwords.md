@@ -2,7 +2,7 @@
 
 ## Description
 
-Ce script PowerShell génère des mots de passe aléatoires sécurisés pour chaque utilisateur listé dans un fichier CSV. Il ajoute ces mots de passe en tant que nouvelle colonne dans le fichier CSV, facilitant ainsi la gestion et la distribution des identifiants temporaires ou initiaux. Le script garantit que chaque mot de passe contient au minimum une majuscule, une minuscule, un chiffre et un symbole, renforçant ainsi la sécurité.
+Ce script PowerShell génère des mots de passe aléatoires sécurisés pour chaque utilisateur listé dans un fichier CSV. Il ajoute ces mots de passe en tant que nouvelle colonne dans le fichier CSV. Le script garantit que chaque mot de passe contient au minimum une majuscule, une minuscule, un chiffre et un symbole.
 
 ---
 
@@ -10,7 +10,7 @@ Ce script PowerShell génère des mots de passe aléatoires sécurisés pour cha
 
 ### Entrées nécessaires
 
-- Un fichier CSV avec au minimum une colonne contenant les utilisateurs (le script s’appuie sur la structure du CSV, notamment la colonne `Email` ou autres données utilisateurs).
+- Un fichier CSV contenant les données utilisateurs, avec au minimum les colonnes suivantes: FirstName;LastName;UserName;Password;Email;Department;JobTitle
 - Le fichier CSV doit être au format texte, encodé en UTF-8, avec un séparateur `;`.
 
 ### Ce que le script produit
@@ -30,17 +30,16 @@ Ce script PowerShell génère des mots de passe aléatoires sécurisés pour cha
 
 ## Exemples d’utilisation
 
-### Exemple 1 : Générer des mots de passe pour les utilisateurs dans `users.csv`
-
 ```powershell
 2_generate_passwords/generate_passwords.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
 
 ## Dépendances / prérequis
 
-- PowerShell version 5.1 ou supérieure
-- Le script doit être exécuté avec des droits suffisants pour lire et écrire le fichier CSV
-- Le fichier CSV doit utiliser le point-virgule (`;`) comme séparateur
+- PowerShell (présent de base sur Windows Server)
+- Module ActiveDirectory installé depuis le script (`Import-Module ActiveDirectory`)
+- Droits administratifs sur l’Active Directory
+- Fichier CSV encodé en UTF-8 avec séparateur `;`
 
 ---
 

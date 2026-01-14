@@ -8,19 +8,15 @@ Le script importe un fichier CSV contenant les noms d'utilisateur, puis pour cha
 si son département et son titre correspondent aux critères spécifiés. Si c'est le cas, il applique une date d'expiration au compte, 
 fixée à un nombre de jours donné à partir de la date actuelle. Cette approche facilite la gestion ciblée des comptes temporaires ou sensibles.
 
-AUTHOR
+AUTRICE
 Alice Dale - alice.dale@eduvaud.ch
 
 LIMITATIONS
-- Le script suppose que le fichier CSV contient une colonne 'Username' correspondant au SamAccountName.
-- Aucune gestion avancée des erreurs n'est encore implémentée pour les cas où le fichier CSV est mal formé ou inaccessible.
-- Le script ne gère pas les fuseaux horaires pour la date d'expiration.
-- Les critères de département et titre sont sensibles à la casse et doivent correspondre exactement.
+- Le script suppose que le CSV utilise le point-virgule (';') comme séparateur.
+- Le script écrase le fichier CSV original, il est donc recommandé de faire une sauvegarde.
 
-EXAMPLES
-# Exemple d'utilisation :
-.\SetUserExpiry.ps1 -csvFilePath "C:\Users\Admin\users.csv" -DepartmentToCheck "Production" -TitleToCheck "Assembler" -DaysToAdd 30
-# Cela définira une date d'expiration à 30 jours pour les utilisateurs du département 'Production' ayant le titre 'Assembler'.
+EXEMPLE D'UTILISATION
+4_update_expiration_date/update_expiration_date.ps1 -csvFilePath "happy_koalas_employees.csv" -DepartmentToCheck "Production" -TitleToCheck "Assembler" 
 #>
 
 [CmdletBinding()]
@@ -52,9 +48,6 @@ else {
 # son chargement préalable est nécessaire pour utiliser les cmdlets associées.
 Import-Module ActiveDirectory -ErrorAction Stop
 
-# Confirmation visuelle du fichier CSV utilisé, utile pour le suivi et le débogage.
-Write-Output "Utilisation du fichier CSV : $csvFilePath"
-
 # Importer les utilisateurs depuis le CSV avec le séparateur ';' correspond au format attendu.
 $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 
@@ -83,10 +76,6 @@ function Set-ADUserExpiryDate {
         # Appliquer la date d'expiration sur le compte AD, ce qui automatise la désactivation future.
         Set-ADAccountExpiration -Identity $username -DateTime $expiryDate
         Write-Host "Date d'expiration definie pour $username : $expiryDate"
-    }
-    else {
-        # Informer que l'utilisateur ne correspond pas aux critères permet de suivre le traitement.
-        Write-Host "Utilisateur $username ne correspond pas aux criteres Departement='$department' et Titre='$title'."
     }
 }
 
