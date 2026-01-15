@@ -35,6 +35,8 @@ Par défaut, Windows restreint l’exécution des scripts PowerShell. Pour perme
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
+Ensuite, tapez "A", puis appuyez sur la touche enter.
+
 Cette commande autorise l’exécution des scripts uniquement pour la session PowerShell en cours, sans modifier la politique globale.
 
 ### Étape 3 : Se positionner dans le dossier du projet
