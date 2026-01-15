@@ -25,6 +25,12 @@ param(
     [string]$csvFilePath = $csvinput
 )
 
+# Vérifie si le fichier source existe
+if (-not (Test-Path $csvFilePath)) {
+    Write-Host "Le fichier source '$Source' est introuvable." -ForegroundColor Red
+    exit 1
+}
+
 # La validation du fichier CSV en amont permet d’éviter des erreurs lors de l’import des données.
 if ([IO.Path]::GetExtension($csvFilePath) -match ".csv") {
     Write-Output "Le chemin pour le fichier .csv est valable, importation des donnees."

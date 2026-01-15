@@ -33,6 +33,12 @@ param(
     [string]$topLevelDomain
 )
 
+# Vérifie si le fichier source existe
+if (-not (Test-Path $csvFilePath)) {
+    Write-Host "Le fichier source '$Source' est introuvable." -ForegroundColor Red
+    exit 1
+}
+
 # Vérifier que le fichier d’entrée est bien un CSV pour éviter de traiter un format incompatible.
 if ([IO.Path]::GetExtension($csvFilePath) -match ".csv") {
     Write-Output "Le chemin pour le fichier .csv est valable, importation des donnees."
