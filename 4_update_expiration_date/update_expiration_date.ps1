@@ -61,8 +61,6 @@ if ($null -eq $matchingUsers -or $matchingUsers.Count -eq 0) {
     Write-Warning "Aucun utilisateur dans Active Directory ne correspond au Departement '$DepartmentToCheck' et au Titre '$TitleToCheck'."
     Write-Warning "Veuillez verifier que ces parametres sont corrects."
     exit 1
-} else {
-    Write-Host "Nombre d'utilisateurs trouves correspondant aux criteres : $($matchingUsers.Count)"
 }
 
 # Importer les utilisateurs depuis le CSV avec le séparateur ';' correspond au format attendu.
