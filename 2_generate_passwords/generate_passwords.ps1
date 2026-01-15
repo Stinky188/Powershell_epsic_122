@@ -27,7 +27,7 @@ param(
 
 # Vérifie si le fichier source existe
 if (-not (Test-Path $csvFilePath)) {
-    Write-Host "Le fichier source '$Source' est introuvable." -ForegroundColor Red
+    Write-Host "Le fichier source '$csvFilePath' est introuvable." -ForegroundColor Red
     exit 1
 }
 
