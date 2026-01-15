@@ -13,24 +13,15 @@ Alice Dale - alice.dale@eduvaud.ch
 LIMITATIONS
 - Le script suppose que le CSV utilise le point-virgule comme délimiteur.
 - Le script écrase le fichier CSV original, il est donc recommandé de faire une sauvegarde.
-- Ce script suppose que les utilisateurs ont des adresses email avec un nom de domaine identique.
 
 EXEMPLE D'UTILISATION
-1_insert_OUs/insert_OUs.ps1 -csvFilePath "happy_koalas_employees.csv" -domainName "laboad" -topLevelDomain "vd"
+1_insert_OUs/insert_OUs.ps1 -csvFilePath "happy_koalas_employees.csv"
 #>
 
 [CmdletBinding()]
 param(
     [ValidateNotNullOrEmpty()]    
-    [string]$csvFilePath = $csvinput,
-
-    [Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string]$domainName,
-
-    [Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string]$topLevelDomain
+    [string]$csvFilePath = $csvinput
 )
 
 # Vérifie si le fichier source existe
@@ -51,35 +42,22 @@ else {
 
 # Le module Active Directory est indispensable pour manipuler les objets AD. Son chargement est obligatoire avant toute commande AD.
 Import-Module ActiveDirectory -ErrorAction Stop
-
-# Vérifier que le domaine AD correspond aux paramètres fournis
-$userDomain = "$domainName.$topLevelDomain"
 $adDomain = (Get-ADDomain).DNSRoot
+Write-Host "Domaine AD detecte : $adDomain"
 
-if ($userDomain.ToLower() -ne $adDomain.ToLower()) {
-    Write-Warning "Le domaine Active Directory actuel '$adDomain' ne correspond pas au domaine specifie '$userDomain'."
-    Write-Warning "Veuillez verifier que les parametres -domainName et -topLevelDomain sont corrects."
-    exit 1
-} else {
-    Write-Host "Le domaine Active Directory correspond aux parametres fournis : $userDomain"
-}
+$domainParts = $adDomain.Split('.')
+$domainName = $domainParts[0]
+$topLevelDomain = $domainParts[1]
 
 # Importer les données utilisateurs en respectant le délimiteur ';' spécifique au format attendu.
 $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 
-# Extraire le domaine email depuis la première adresse email pour homogénéiser les données. Ceci sera utile pour éviter les doublons d'adresse email par la suite.
-# Attention ! Cette méthode suppose que tous les emails partagent le même domaine, ce qui est le cas dans le csv exemple.
-$emailString = $userData[0].Email
-$findchar = $emailString.IndexOf("@")
-$emailDomain = $emailString.Substring($findchar + 1)
 
-Write-Host "Le format de l'adresse mail est <user>@$emailDomain. Informations ajoutees au csv."
 
 # Ajouter les informations de domaine et TLD à chaque utilisateur pour simplifier les traitements ultérieurs.
 foreach ($row in $userData) { 
     $row | Add-Member -MemberType "NoteProperty" -Name dn -Value $domainName -Force 
     $row | Add-Member -MemberType "NoteProperty" -Name tld -Value $topLevelDomain -Force 
-    $row | Add-Member -MemberType "NoteProperty" -Name emailDomain -Value $emailDomain -Force
 }
 
 # Réécrire le CSV avec les nouvelles informations afin que les prochaines étapes disposent de toutes les données nécessaires.

@@ -13,7 +13,7 @@ LIMITATIONS
 - Le script écrase le fichier CSV original, il est donc recommandé de faire une sauvegarde.
 - Ce script requiert que le script "insert_OUs.ps1" ait été exécuté au préalable.
 - Ce script ne doit pas être exécuté plus d'une fois, car les utilisateurs seront créés à double avec un chiffre pour les distinguer.
-- Les noms affichés dans l'AD correspondent au nom d'utilisateur (première lettre du prénom + nom de famille).
+- Les noms affichés dans l'AD correspondent au nom d'utilisateur (première lettre du prénom + nom de famille) par défaut.
 
 EXEMPLE D'UTILISATION
 3_insert_users/insert_users.ps1 -csvFilePath "happy_koalas_employees.csv"
@@ -47,37 +47,38 @@ Import-Module ActiveDirectory -ErrorAction Stop
 $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 
 foreach ($User in $userData) {
-    # Les propriétés utilisateur sont extraites explicitement pour garantir leur disponibilité et faciliter la lecture du code.
     $GivenName = [string]$User.FirstName
     $Surname = [string]$User.LastName
-    $Username = [string]$User.UserName
-    $emailDomain = [string]$User.emailDomain
+    $baseUsername = [string]$User.UserName
+    $Username = $baseUsername  
+    $emailFull = [string]$User.Email               
     $Title = [string]$User.JobTitle
     $Department = [string]$User.Department
     $InitialPassword = [string]$User.Password
     $dn = [string]$User.dn
     $tld = [string]$User.tld
 
-    Write-Output $Username
-
-    # L’unicité du SamAccountName est cruciale pour éviter les conflits dans AD. Ce mécanisme garantit un nom unique en ajoutant un suffixe numérique.
+    # Vérifier l'unicité du SamAccountName et ajouter un suffixe numérique si nécessaire
     $count = 2
     while (Get-ADUser -Filter "SamAccountName -eq '$Username'") {
-        $Username = '{0}{1}' -f $User.UserName, $count++
+        $Username = '{0}{1}' -f $baseUsername, $count++
     }
+    $emailDomain = $emailFull.Substring($emailFull.IndexOf("@") + 1)
 
-    # Regrouper les propriétés dans un hashtable améliore la lisibilité et facilite la maintenance ou l’extension des paramètres utilisateur.
+    # Reonstruire l'adresse email avec le nom d'utilisateur (avec ou sans suffixe numérique)
+    $emailAddress = "$Username@$emailDomain"
+
     $newUserInfo = @{
         SamAccountName        = $Username
         Name                  = $Username
         GivenName             = $GivenName
         Surname               = $Surname
         DisplayName           = "$Surname $GivenName"
-        UserPrincipalName     = "$Username@$emailDomain"
-        EmailAddress          = "$Username@$emailDomain"
+        UserPrincipalName     = $emailAddress
+        EmailAddress          = $emailAddress
         Enabled               = $True
         ChangePasswordAtLogon = $true
-        Path                  = "OU=$Department,OU=OU,DC=$dn,DC=$tld"  # Construire dynamiquement le chemin LDAP permet d’adapter la création aux structures existantes.
+        Path                  = "OU=$Department,OU=OU,DC=$dn,DC=$tld" # requiert l'exécution préalable du premier script
         Company               = "$dn.$tld"
         AccountPassword       = (ConvertTo-SecureString $InitialPassword -AsPlainText -Force)
         Title                 = $Title

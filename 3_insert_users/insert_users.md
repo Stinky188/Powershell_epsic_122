@@ -10,7 +10,7 @@ Ce script PowerShell permet d’automatiser la création d’utilisateurs dans A
 
 ### Entrées nécessaires
 
-- Un fichier CSV contenant les données utilisateurs, avec au minimum les colonnes suivantes: FirstName;LastName;UserName;Password;Email;Department;JobTitle;dn;tld;emailDomain
+- Un fichier CSV contenant les données utilisateurs, avec au minimum les colonnes suivantes: FirstName;LastName;UserName;Password;Email;Department;JobTitle;dn;tld
 - Le fichier CSV doit être au format texte, encodé en UTF-8, avec un séparateur `;`.
 
 ### Ce que le script produit

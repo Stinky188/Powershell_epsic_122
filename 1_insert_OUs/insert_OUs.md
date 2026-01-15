@@ -2,7 +2,7 @@
 
 ## Description
 
-Ce script PowerShell permet d’automatiser la création d’Unités d’Organisation (OU) dans un Active Directory (AD). Il ajoute des informations sur le domaine et le TLD (Top-Level Domain) aux données importées, extrait le nom de domaine pour les adresses email des utilisateurs et crée une structure d’OU basée sur les départements présents dans le CSV.
+Ce script PowerShell permet d’automatiser la création d’Unités d’Organisation (OU) dans un Active Directory (AD). Il ajoute des informations sur le domaine et le TLD (Top-Level Domain) de l'AD aux données importées et crée une structure d’OU basée sur les départements présents dans le CSV.
 
 ---
 
@@ -12,12 +12,10 @@ Ce script PowerShell permet d’automatiser la création d’Unités d’Organis
 
 - Un fichier CSV contenant les données utilisateurs, avec au minimum les colonnes suivantes: FirstName;LastName;UserName;Password;Email;Department;JobTitle
 - Le fichier CSV doit être au format texte, encodé en UTF-8, avec un séparateur `;`.
-- Le nom de domaine (domain name) de l’Active Directory (exemple : `laboad`).
-- Le TLD du domaine (exemple : `vd`).
 
 ### Sorties
 
-- Mise à jour du fichier CSV avec des colonnes supplémentaires : `dn` (nom de domaine), `tld` (top-level domain), et `emailDomain` (domaine des emails extraits).
+- Mise à jour du fichier CSV avec des colonnes supplémentaires : `dn` (nom de domaine), `tld` (top-level domain).
 - Création d’une OU racine nommée `OU` si elle n’existe pas.
 - Création d’Unités d’Organisation enfants correspondant aux départements présents dans le CSV.
 
@@ -28,8 +26,6 @@ Ce script PowerShell permet d’automatiser la création d’Unités d’Organis
 |Paramètre|Description|Valeurs acceptables|Obligatoire|
 |---|---|---|---|
 |`-csvFilePath`|Chemin complet vers le fichier CSV à importer. Le fichier doit être au format `.csv`.|Chemin valide vers un fichier `.csv`|Oui|
-|`-domainName`|Nom du domaine Active Directory (exemple : `myAD`).|Chaîne de caractères non vide|Oui|
-|`-topLevelDomain`|TLD du domaine Active Directory (exemple : `com`).|Chaîne de caractères non vide|Oui|
 
 ---
 
@@ -38,7 +34,7 @@ Ce script PowerShell permet d’automatiser la création d’Unités d’Organis
 ### Importer un fichier CSV et créer les OU pour le domaine `laboad.vd`
 
 ```powershell
-1_insert_OUs/insert_OUs.ps1 -csvFilePath "happy_koalas_employees.csv" -domainName "laboad" -topLevelDomain "vd"
+1_insert_OUs/insert_OUs.ps1 -csvFilePath "happy_koalas_employees.csv"
 ```
 ## Dépendances / prérequis
 
