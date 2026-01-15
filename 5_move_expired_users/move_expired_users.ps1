@@ -56,19 +56,17 @@ $OUfullPath = "OU=$OUname,$OUparent"
 
 # Vérifier si l’OU "Retired" existe déjà pour éviter une duplication.
 if (Get-ADOrganizationalUnit -Filter "distinguishedName -eq '$OUfullPath'") {
-    Write-Host "$OUname already exists."
+    Write-Host "$OUname existe deja."
 }
 else {
     # Créer l’OU "Retired" sous l’OU parent spécifié pour organiser les comptes expirés.
     New-ADOrganizationalUnit -Name $OUname -Path $OUparent -ProtectedFromAccidentalDeletion $False
-    Write-Host "Created Retired OU"
+    Write-Host "Creation de l'OU Retired!"
 }
 
 # Parcourir chaque compte expiré pour le déplacer dans l’OU "Retired".
 foreach ($user in $expiredUsers) {
-    # Afficher le SamAccountName pour suivi dans la console.
-    $user.SamAccountName
     # Déplacer l’objet utilisateur dans l’OU cible pour centraliser la gestion des comptes expirés.
     $user | Move-ADObject -TargetPath $OUfullPath
-    Write-Output "$($user.SamAccountName) - Moved"
+    Write-Output "$($user.SamAccountName) a ete deplace avec succes!"
 }

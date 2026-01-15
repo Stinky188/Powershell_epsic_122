@@ -97,8 +97,6 @@ $properties = @(
 $dn = [string]$userData.dn[0]
 $tld = [string]$userData.tld[0]
 
-Write-Host "OU=OU,DC=$dn,DC=$tld"
-
 # La requête Get-ADUser est filtrée sur l’OU spécifique pour limiter la portée et améliorer la performance.
 # La sélection des propriétés est adaptée au besoin d’export et à la lisibilité du CSV final.
 Get-ADUser -filter * -properties $properties -SearchBase "OU=OU,DC=$dn,DC=$tld" |
