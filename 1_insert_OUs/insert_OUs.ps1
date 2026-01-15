@@ -49,6 +49,21 @@ else {
     exit
 }
 
+# Le module Active Directory est indispensable pour manipuler les objets AD. Son chargement est obligatoire avant toute commande AD.
+Import-Module ActiveDirectory -ErrorAction Stop
+
+# Vérifier que le domaine AD correspond aux paramètres fournis
+$userDomain = "$domainName.$topLevelDomain"
+$adDomain = (Get-ADDomain).DNSRoot
+
+if ($userDomain.ToLower() -ne $adDomain.ToLower()) {
+    Write-Warning "Le domaine Active Directory actuel '$adDomain' ne correspond pas au domaine specifie '$userDomain'."
+    Write-Warning "Veuillez verifier que les parametres -domainName et -topLevelDomain sont corrects."
+    exit 1
+} else {
+    Write-Host "Le domaine Active Directory correspond aux parametres fournis : $userDomain"
+}
+
 # Importer les données utilisateurs en respectant le délimiteur ';' spécifique au format attendu.
 $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 
@@ -58,7 +73,7 @@ $emailString = $userData[0].Email
 $findchar = $emailString.IndexOf("@")
 $emailDomain = $emailString.Substring($findchar + 1)
 
-Write-Host "Le nom de l'active directory est $domainName.$topLevelDomain. Le format de l'adresse mail est <user>@$emailDomain. Informations ajoutees au csv."
+Write-Host "Le format de l'adresse mail est <user>@$emailDomain. Informations ajoutees au csv."
 
 # Ajouter les informations de domaine et TLD à chaque utilisateur pour simplifier les traitements ultérieurs.
 foreach ($row in $userData) { 
