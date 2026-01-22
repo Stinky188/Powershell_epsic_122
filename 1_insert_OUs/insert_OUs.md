@@ -31,7 +31,7 @@ Ce script PowerShell permet d’automatiser la création d’Unités d’Organis
 
 ## Exemples d’utilisation
 
-### Importer un fichier CSV et créer les OU pour le domaine `laboad.vd`
+### Importer un fichier CSV et créer les OU
 
 ```powershell
 1_insert_OUs/insert_OUs.ps1 -csvFilePath "happy_koalas_employees.csv"
