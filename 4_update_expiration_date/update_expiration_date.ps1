@@ -17,6 +17,9 @@ LIMITATIONS
 
 EXEMPLE D'UTILISATION
 4_update_expiration_date/update_expiration_date.ps1 -csvFilePath "happy_koalas_employees.csv" -DepartmentToCheck "Production" -TitleToCheck "Assembler" 
+
+VERSION DU SCRIPT
+1.0
 #>
 
 [CmdletBinding()]
@@ -64,7 +67,13 @@ if ($null -eq $matchingUsers -or $matchingUsers.Count -eq 0) {
 }
 
 # Importer les utilisateurs depuis le CSV avec le séparateur ';' correspond au format attendu.
-$userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+try {
+    $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+}
+catch {
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    exit 1
+}
 
 # Fonction dédiée pour appliquer la date d'expiration uniquement aux utilisateurs répondant aux critères.
 function Set-ADUserExpiryDate {
@@ -95,6 +104,12 @@ function Set-ADUserExpiryDate {
 }
 
 # Parcourir chaque utilisateur importé pour appliquer la fonction avec les paramètres dynamiques.
-foreach ($user in $userData) {
-    Set-ADUserExpiryDate -username $user.Username -daysToAdd $DaysToAdd -department $DepartmentToCheck -title $TitleToCheck
+try {
+    foreach ($user in $userData) {
+        Set-ADUserExpiryDate -username $user.Username -daysToAdd $DaysToAdd -department $DepartmentToCheck -title $TitleToCheck
+    }
+}
+catch {
+    Write-Error "Erreur lors de l'application de la date d'expiration : $($_.Exception.Message)"
+    exit 1
 }

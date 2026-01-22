@@ -4,6 +4,8 @@
 
 Ce script PowerShell permet d’automatiser la création d’Unités d’Organisation (OU) dans un Active Directory (AD). Il ajoute des informations sur le domaine et le TLD (Top-Level Domain) de l'AD aux données importées et crée une structure d’OU basée sur les départements présents dans le CSV.
 
+Ce script est destiné à des utilisateurs avec des connaissances de base dans l'utilisation de scripts et de l'Active Directory.
+
 ---
 
 ## Comment l’utiliser

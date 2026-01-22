@@ -16,6 +16,9 @@ LIMITATIONS
 
 EXEMPLE D'UTILISATION
 1_insert_OUs/insert_OUs.ps1 -csvFilePath "happy_koalas_employees.csv"
+
+VERSION DU SCRIPT
+1.0
 #>
 
 [CmdletBinding()]
@@ -56,9 +59,13 @@ $domainName = $domainParts[0]
 $topLevelDomain = $domainParts[1]
 
 # Importer les données utilisateurs en respectant le délimiteur ';' spécifique au format attendu.
-$userData = Import-Csv -Path $csvFilePath -Delimiter ';'
-
-
+try {
+    $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+}
+catch {
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    exit 1
+}
 
 # Ajouter les informations de domaine et TLD à chaque utilisateur pour simplifier les traitements ultérieurs.
 foreach ($row in $userData) { 

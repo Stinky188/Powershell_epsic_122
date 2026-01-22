@@ -17,6 +17,9 @@ LIMITATIONS
 
 EXEMPLE D'UTILISATION
 3_insert_users/insert_users.ps1 -csvFilePath "happy_koalas_employees.csv"
+
+VERSION DU SCRIPT
+1.0
 #>
 
 [CmdletBinding()]
@@ -44,7 +47,13 @@ else {
 Import-Module ActiveDirectory -ErrorAction Stop
 
 # L’import des données CSV avec le délimiteur ';' correspond au format attendu par l’organisation.
-$userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+try {
+    $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+}
+catch {
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    exit 1
+}
 
 foreach ($User in $userData) {
     $GivenName = [string]$User.FirstName
@@ -87,7 +96,13 @@ foreach ($User in $userData) {
     }
 
     # La création de l’utilisateur AD est lancée avec le paramètre -Verbose pour faciliter le suivi en cas de problème.
-    New-ADUser @newUserInfo -Verbose
+    try {
+        New-ADUser @newUserInfo -Verbose
+    }
+    catch {
+        Write-Error "Erreur lors de la creation de l'utilisateur $Username (assurez-vous que vous avez les droits d'ecriture sur l'AD) : $($_.Exception.Message)"
+        exit 1
+    }
 }
 
 # Liste des propriétés à récupérer pour l’export des utilisateurs, facilitant la sélection ciblée des informations.

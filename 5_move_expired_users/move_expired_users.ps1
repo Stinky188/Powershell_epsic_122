@@ -18,6 +18,9 @@ LIMITATIONS
 
 EXEMPLE D'UTILISATION
 5_move_expired_users/move_expired_users.ps1 -csvFilePath "happy_koalas_employees.csv"
+
+VERSION DU SCRIPT
+1.0
 #>
 
 [CmdletBinding()]
@@ -46,10 +49,22 @@ else {
 Import-Module ActiveDirectory -ErrorAction Stop
 
 # Importer les informations de domaine depuis le CSV, nécessaires à la construction des chemins LDAP.
-$userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+try {
+    $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+}
+catch {
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    exit 1
+}
 
 # Récupérer tous les comptes AD expirés (non désactivés) pour traitement.
-$expiredUsers = Search-ADAccount -AccountExpired
+try {
+    $expiredUsers = Search-ADAccount -AccountExpired
+}
+catch {
+    Write-Error "Erreur lors de la recherche des comptes expires, il y a peut-etre un probleme de connexion a l'AD : $($_.Exception.Message)"
+    exit 1
+}
 
 # Extraire les composants de domaine depuis le CSV pour construire le chemin LDAP.
 $dn = [string]$userData.dn[0]
@@ -61,18 +76,29 @@ $OUparent = "OU=OU,DC=$dn,DC=$tld"
 $OUfullPath = "OU=$OUname,$OUparent"
 
 # Vérifier si l’OU "Retired" existe déjà pour éviter une duplication.
-if (Get-ADOrganizationalUnit -Filter "distinguishedName -eq '$OUfullPath'") {
-    Write-Host "$OUname existe deja."
+try {
+    if (Get-ADOrganizationalUnit -Filter "distinguishedName -eq '$OUfullPath'") {
+        Write-Host "$OUname existe deja."
+    }
+    else {
+        # Créer l’OU "Retired" sous l’OU parent spécifié pour organiser les comptes expirés.
+        New-ADOrganizationalUnit -Name $OUname -Path $OUparent -ProtectedFromAccidentalDeletion $False
+        Write-Host "Creation de l'OU Retired!"
+    }
 }
-else {
-    # Créer l’OU "Retired" sous l’OU parent spécifié pour organiser les comptes expirés.
-    New-ADOrganizationalUnit -Name $OUname -Path $OUparent -ProtectedFromAccidentalDeletion $False
-    Write-Host "Creation de l'OU Retired!"
+catch {
+    Write-Error "Erreur lors de la verification ou creation de l'OU $OUname (assurez-vous que vous avez les droits d'ecriture sur l'AD) : $($_.Exception.Message)"
+    exit 1
 }
 
 # Parcourir chaque compte expiré pour le déplacer dans l’OU "Retired".
 foreach ($user in $expiredUsers) {
     # Déplacer l’objet utilisateur dans l’OU cible pour centraliser la gestion des comptes expirés.
-    $user | Move-ADObject -TargetPath $OUfullPath
-    Write-Output "$($user.SamAccountName) a ete deplace avec succes!"
+    try {
+        $user | Move-ADObject -TargetPath $OUfullPath
+        Write-Output "$($user.SamAccountName) a ete deplace avec succes!"
+    }
+    catch {
+        Write-Warning "Erreur lors du deplacement de $($user.SamAccountName) : $($_.Exception.Message)"
+    }
 }

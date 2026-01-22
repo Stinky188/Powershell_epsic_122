@@ -4,6 +4,8 @@
 
 Ce script PowerShell permet d’exporter les informations des utilisateurs Active Directory présents dans les unités d’organisation (OU) listées dans un fichier CSV. Il crée un nouveau fichier CSV contenant les données des utilisateurs avec les informations de domaine, puis compresse ce fichier dans une archive ZIP.
 
+Ce script est destiné à des utilisateurs avec des connaissances de base dans l'utilisation de scripts et de Windows Server.
+
 ---
 
 ## Comment l’utiliser

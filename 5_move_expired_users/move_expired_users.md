@@ -4,6 +4,8 @@
 
 Ce script PowerShell automatise la gestion des comptes Active Directory expirés en les déplaçant dans une unité d’organisation (OU) dédiée nommée "Retired". Il importe les informations de domaine depuis un fichier CSV, crée l’OU si elle n’existe pas, puis centralise tous les comptes expirés non désactivés dans cette OU.
 
+Ce script est destiné à des utilisateurs avec des connaissances de base dans l'utilisation de scripts et de l'Active Directory.
+
 ---
 
 ## Comment l’utiliser

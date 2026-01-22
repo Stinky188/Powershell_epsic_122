@@ -15,7 +15,10 @@ LIMITATIONS
 
 EXEMPLE D'UTILISATION
 6_backup_users/backup_users.ps1 -csvFilePath "happy_koalas_employees.csv"
-# Référez-vous au README pour des informations sur l'automatisation de ce script.
+# Référez-vous au README backup_users.md pour des informations sur l'automatisation de ce script.
+
+VERSION DU SCRIPT
+1.0
 #>
 
 [CmdletBinding()]
@@ -53,7 +56,13 @@ $properties = @(
 )
 
 # Importation du CSV pour avoir les informations sur le nom de l'AD et les départements dans lesquels extraire des informations
-$userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+try {
+    $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+}
+catch {
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    exit 1
+}
 
 # Extraction des informations de domaine depuis le CSV pour construire le chemin LDAP
 $dn = [string]$userData.dn[0]
@@ -68,14 +77,26 @@ $OUs = foreach ($dept in $uniqueDepartments) {
 }
 
 # Récupération des utilisateurs AD dans chacun des OUs
-$ADReport = foreach ($OU in $OUs) {
-    Get-ADUser -Filter * -Properties $properties -SearchBase $OU
+try {
+    $ADReport = foreach ($OU in $OUs) {
+        Get-ADUser -Filter * -Properties $properties -SearchBase $OU
+    }
+}
+catch {
+    Write-Error "Erreur lors de la recuperation des utilisateurs AD : $($_.Exception.Message)"
+    exit 1
 }
 
 # Répertoire de sauvegarde des exports, si ce dossier n'existe pas, on le crée
 $path = "C:\backups\"
-If (-not(test-path -PathType container $path)) {
+try {
+    If (-not(test-path -PathType container $path)) {
     New-Item -ItemType Directory -Path $path
+    }
+}
+catch {
+    Write-Error "Erreur lors de la creation du dossier de sauvegarde '$path' : $($_.Exception.Message)"
+    exit 1
 }
 
 # Nom du fichier CSV et ZIP avec date. Ces variables seront utilisées pour savoir où exporter le csv et en informer l'utilisateur
@@ -113,10 +134,22 @@ foreach ($row in $reimport) {
 $reimport | Export-CSV -Path $csvOutputPath -Delimiter ';' -Encoding utf8 -NoTypeInformation
 
 # Création de l’archive ZIP contenant le CSV exporté
-Compress-Archive -Path $csvOutputPath -DestinationPath (Join-Path $path $csvOutputName) -Force
+try {
+    Compress-Archive -Path $csvOutputPath -DestinationPath (Join-Path $path $csvOutputName) -Force
+}
+catch {
+    Write-Error "Erreur lors de la compression du fichier CSV : $($_.Exception.Message)"
+    exit 1
+}
 
 # Suppression du fichier CSV temporaire après compression
-Remove-Item $csvOutputPath -Recurse -Force
+try {
+    Remove-Item $csvOutputPath -Recurse -Force
+}
+catch {
+    Write-Warning "Erreur lors de la suppression du fichier CSV temporaire : $($_.Exception.Message)"
+}
+
 
 Write-Host "Sauvegarde compressee effectuee avec succes !" -ForegroundColor Green
 Write-Host "Chemin = $path$csvOutputName$zipExtension"

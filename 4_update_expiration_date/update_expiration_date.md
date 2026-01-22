@@ -6,6 +6,8 @@ Ce script PowerShell permet de définir une date d’expiration sur les comptes 
 La date d'expiration sera affichée dans l'onglet "account" sous le format "end of [jour]". Le jour affiché sera un jour avant la date définie:
 Ceci est parce que la date d'expiration est définie pour minuit, ce qui compte toujours techniquement comme le jour précédent.
 
+Ce script est destiné à des utilisateurs avec des connaissances de base dans l'utilisation de scripts et de l'Active Directory.
+
 ---
 
 ## Comment l’utiliser

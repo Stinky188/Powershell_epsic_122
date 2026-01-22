@@ -4,6 +4,8 @@
 
 Ce script PowerShell génère des mots de passe aléatoires sécurisés pour chaque utilisateur listé dans un fichier CSV. Il ajoute ces mots de passe en tant que nouvelle colonne dans le fichier CSV. Le script garantit que chaque mot de passe contient au minimum une majuscule, une minuscule, un chiffre et un symbole.
 
+Ce script est destiné à des utilisateurs avec des connaissances de base dans l'utilisation de scripts et de l'Active Directory.
+
 ---
 
 ## Comment l’utiliser

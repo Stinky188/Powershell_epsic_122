@@ -17,6 +17,9 @@ LIMITATIONS
 
 EXEMPLE D'UTILISATION
 2_generate_passwords/generate_passwords.ps1 -csvFilePath "happy_koalas_employees.csv"
+
+VERSION DU SCRIPT
+1.0
 #>
 
 [CmdletBinding()]
@@ -41,7 +44,13 @@ else {
 }
 
 # Importe les données utilisateurs depuis le fichier CSV en utilisant le délimiteur spécifié pour bien parser les champs.
-$userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+try {
+    $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+}
+catch {
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    exit 1
+}
 
 # Cette fonction génère une chaîne de caractères aléatoire de la taille donnée.
 # Elle garantit l’inclusion obligatoire de majuscules, minuscules, chiffres et symboles par conception.
