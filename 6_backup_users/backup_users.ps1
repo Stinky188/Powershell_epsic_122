@@ -1,4 +1,4 @@
-<#
+﻿<#
 SYNOPSIS
 Ce script permet de faire une sauvegarde de l'état de l'AD.
 
@@ -60,7 +60,7 @@ try {
     $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 }
 catch {
-    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-être read-only ou corrompu : $($_.Exception.Message)"
     exit 1
 }
 
@@ -83,7 +83,7 @@ try {
     }
 }
 catch {
-    Write-Error "Erreur lors de la recuperation des utilisateurs AD : $($_.Exception.Message)"
+    Write-Error "Erreur lors de la récuperation des utilisateurs AD : $($_.Exception.Message)"
     exit 1
 }
 
@@ -95,7 +95,7 @@ try {
     }
 }
 catch {
-    Write-Error "Erreur lors de la creation du dossier de sauvegarde '$path' : $($_.Exception.Message)"
+    Write-Error "Erreur lors de la création du dossier de sauvegarde '$path' : $($_.Exception.Message)"
     exit 1
 }
 
@@ -151,5 +151,5 @@ catch {
 }
 
 
-Write-Host "Sauvegarde compressee effectuee avec succes !" -ForegroundColor Green
+Write-Host "Sauvegarde compressée effectuée avec succès !" -ForegroundColor Green
 Write-Host "Chemin = $path$csvOutputName$zipExtension"

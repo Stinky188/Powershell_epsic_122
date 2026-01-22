@@ -1,4 +1,4 @@
-<#
+﻿<#
 SYNOPSIS
 Ce script permet de définir une date d'expiration sur les comptes Active Directory d'utilisateurs spécifiques, 
 en fonction de leur département et de leur titre, à partir d'une liste d'utilisateurs importée depuis un fichier CSV.
@@ -45,7 +45,7 @@ if (-not (Test-Path $csvFilePath)) {
 
 # Valider le format du fichier en amont évite des erreurs inutiles lors de l'import des données.
 if ([IO.Path]::GetExtension($csvFilePath) -match ".csv") {
-    Write-Output "Le chemin pour le fichier .csv est valable, importation des donnees."
+    Write-Output "Le chemin pour le fichier .csv est valable, importation des données."
 }
 else {
     # Informer l'utilisateur d'un chemin incorrect évite d'exécuter un traitement sur un fichier invalide.
@@ -61,8 +61,8 @@ Import-Module ActiveDirectory -ErrorAction Stop
 $matchingUsers = Get-ADUser -Filter "Department -eq '$DepartmentToCheck' -and Title -eq '$TitleToCheck'" -Properties Department, Title
 
 if ($null -eq $matchingUsers -or $matchingUsers.Count -eq 0) {
-    Write-Warning "Aucun utilisateur dans Active Directory ne correspond au Departement '$DepartmentToCheck' et au Titre '$TitleToCheck'."
-    Write-Warning "Veuillez verifier que ces parametres sont corrects."
+    Write-Warning "Aucun utilisateur dans Active Directory ne correspond au Département '$DepartmentToCheck' et au Titre '$TitleToCheck'."
+    Write-Warning "Veuillez vérifier que ces paramètres sont corrects."
     exit 1
 }
 
@@ -71,7 +71,7 @@ try {
     $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 }
 catch {
-    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-être read-only ou corrompu : $($_.Exception.Message)"
     exit 1
 }
 
@@ -99,7 +99,7 @@ function Set-ADUserExpiryDate {
         $expiryDate = (Get-Date).AddDays($daysToAdd)
         # Appliquer la date d'expiration sur le compte AD, ce qui automatise la désactivation future.
         Set-ADAccountExpiration -Identity $username -DateTime $expiryDate
-        Write-Host "Date d'expiration definie pour $username : $expiryDate"
+        Write-Host "Date d'expiration définie pour $username : $expiryDate"
     }
 }
 

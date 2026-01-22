@@ -1,4 +1,4 @@
-<#
+﻿<#
 SYNOPSIS
 Ce script importe des utilisateurs depuis un fichier CSV, ajoute les informations de domaine, 
 puis prépare la structure des Unités d’Organisation (OU) dans Active Directory avant la création des comptes.
@@ -35,7 +35,7 @@ if (-not (Test-Path $csvFilePath)) {
 
 # Vérifier que le fichier d’entrée est bien un CSV pour éviter de traiter un format incompatible.
 if ([IO.Path]::GetExtension($csvFilePath) -match ".csv") {
-    Write-Output "Le chemin pour le fichier .csv est valable, importation des donnees."
+    Write-Output "Le chemin pour le fichier .csv est valable, importation des données."
 }
 else {
     # Stopper l’exécution si le fichier n’est pas un CSV, car la suite du script dépend de ce format.
@@ -47,10 +47,10 @@ else {
 Import-Module ActiveDirectory -ErrorAction Stop
 try {
     $adDomain = (Get-ADDomain).DNSRoot
-    Write-Host "Domaine AD detecte : $adDomain"
+    Write-Host "Domaine AD détecté : $adDomain"
 }
 catch {
-    Write-Error "Impossible de recuperer le domaine AD : $($_.Exception.Message)"
+    Write-Error "Impossible de récuperer le domaine AD : $($_.Exception.Message)"
     exit 1
 }
 
@@ -63,7 +63,7 @@ try {
     $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 }
 catch {
-    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-être read-only ou corrompu : $($_.Exception.Message)"
     exit 1
 }
 
@@ -86,7 +86,7 @@ try {
     $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 }
 catch {
-    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-être read-only ou corrompu : $($_.Exception.Message)"
     exit 1
 }
 
@@ -98,27 +98,27 @@ foreach ($organisationalUnit in $userData) {
 
 # Vérifier si une OU racine nommée "OU" existe déjà pour éviter les doublons.
 if (Get-ADOrganizationalUnit -Filter "Name -eq 'OU'") {
-    Write-Host "L'OU a la racine a deja ete cree."
+    Write-Host "L'OU à la racine a déjà été créée."
 }
 else {
     # Créer l’OU racine sans protection contre suppression accidentelle pour permettre la suppression facile en cas de problèmes.
     New-ADOrganizationalUnit -Name "OU" -ProtectedFromAccidentalDeletion $False
-    Write-Host "Creation de l'OU a la racine."
+    Write-Host "Création de l'OU à la racine."
 }
 
 # Créer les OUs enfants correspondant aux départements, en évitant la création de doublons.
 try {
     foreach ($ou in $userData.Department | Select-Object -Unique) {
         if (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'") {
-            Write-Host "L'OU $ou a deja ete cree."
+            Write-Host "L'OU $ou a déjà été créée."
         }
         else {
             New-ADOrganizationalUnit -Name $ou -Path "OU=OU,DC=$dn,DC=$tld" -ProtectedFromAccidentalDeletion $False
-            Write-Host "Creation de l'OU $ou."
+            Write-Host "Création de l'OU $ou."
         }
     }
 }   
 catch {
-    Write-Error "Erreur lors de la creation de l'OU racine, il y a peut-etre un probleme de droits sur l'AD : $($_.Exception.Message)"
+    Write-Error "Erreur lors de la création de l'OU racine, il y a peut-être un problème de droits sur l'AD : $($_.Exception.Message)"
     exit 1
 }

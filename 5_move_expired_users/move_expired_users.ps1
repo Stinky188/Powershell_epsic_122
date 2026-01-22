@@ -1,4 +1,4 @@
-<#
+﻿<#
 SYNOPSIS
 Ce script identifie les comptes Active Directory expirés et non désactivés, puis les déplace dans une unité d’organisation (OU) dédiée nommée "Retired".
 
@@ -53,7 +53,7 @@ try {
     $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 }
 catch {
-    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-être read-only ou corrompu : $($_.Exception.Message)"
     exit 1
 }
 
@@ -62,7 +62,7 @@ try {
     $expiredUsers = Search-ADAccount -AccountExpired
 }
 catch {
-    Write-Error "Erreur lors de la recherche des comptes expires, il y a peut-etre un probleme de connexion a l'AD : $($_.Exception.Message)"
+    Write-Error "Erreur lors de la recherche des comptes expirés, il y a peut-être un problème de connexion à l'AD : $($_.Exception.Message)"
     exit 1
 }
 
@@ -78,16 +78,16 @@ $OUfullPath = "OU=$OUname,$OUparent"
 # Vérifier si l’OU "Retired" existe déjà pour éviter une duplication.
 try {
     if (Get-ADOrganizationalUnit -Filter "distinguishedName -eq '$OUfullPath'") {
-        Write-Host "$OUname existe deja."
+        Write-Host "$OUname existe déjà."
     }
     else {
         # Créer l’OU "Retired" sous l’OU parent spécifié pour organiser les comptes expirés.
         New-ADOrganizationalUnit -Name $OUname -Path $OUparent -ProtectedFromAccidentalDeletion $False
-        Write-Host "Creation de l'OU Retired!"
+        Write-Host "Création de l'OU Retired!"
     }
 }
 catch {
-    Write-Error "Erreur lors de la verification ou creation de l'OU $OUname (assurez-vous que vous avez les droits d'ecriture sur l'AD) : $($_.Exception.Message)"
+    Write-Error "Erreur lors de la vérification ou création de l'OU $OUname (assurez-vous que vous avez les droits d'écriture sur l'AD) : $($_.Exception.Message)"
     exit 1
 }
 
@@ -96,9 +96,9 @@ foreach ($user in $expiredUsers) {
     # Déplacer l’objet utilisateur dans l’OU cible pour centraliser la gestion des comptes expirés.
     try {
         $user | Move-ADObject -TargetPath $OUfullPath
-        Write-Output "$($user.SamAccountName) a ete deplace avec succes!"
+        Write-Output "$($user.SamAccountName) a été déplacé avec succès!"
     }
     catch {
-        Write-Warning "Erreur lors du deplacement de $($user.SamAccountName) : $($_.Exception.Message)"
+        Write-Warning "Erreur lors du déplacement de $($user.SamAccountName) : $($_.Exception.Message)"
     }
 }

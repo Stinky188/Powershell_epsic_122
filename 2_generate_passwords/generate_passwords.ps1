@@ -1,4 +1,4 @@
-<#
+﻿<#
 SYNOPSIS
 Ce script génère des mots de passe aléatoires pour les utilisateurs listés dans un fichier CSV et ajoute ces mots de passe en tant que nouvelle colonne.
 
@@ -48,7 +48,7 @@ try {
     $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 }
 catch {
-    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-être read-only ou corrompu : $($_.Exception.Message)"
     exit 1
 }
 
@@ -94,6 +94,6 @@ foreach ($row in $userData) {
     # Ajoute le mot de passe généré comme nouvelle propriété nommée 'Password' pour l’export ultérieur.
     $row | Add-Member -MemberType "NoteProperty" -Name Password -Value $newPwd -Force 
 }
-Write-Host "Mots de passe crees avec succes!"
+Write-Host "Mots de passe créés avec succès!"
 # Exporte les données utilisateurs mises à jour dans le fichier CSV, en supprimant les guillemets pour simplifier la lisibilité.
 $userData | Export-CSV -Path $csvFilePath -Delimiter ';' -Encoding utf8 -NoTypeInformation

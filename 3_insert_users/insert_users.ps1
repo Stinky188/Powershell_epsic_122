@@ -1,4 +1,4 @@
-<#
+﻿<#
 SYNOPSIS
 Ce script automatise la création d’utilisateurs dans Active Directory à partir d’un fichier CSV, en garantissant l’unicité des noms d’utilisateur et en structurant les comptes dans des unités d’organisation (OU) selon les départements.
 
@@ -36,7 +36,7 @@ if (-not (Test-Path $csvFilePath)) {
 
 # La validation du fichier CSV en amont permet d’éviter des erreurs lors de l’import des données.
 if ([IO.Path]::GetExtension($csvFilePath) -match ".csv") {
-    Write-Output "Le chemin pour le fichier .csv est valable, importation des donnees."
+    Write-Output "Le chemin pour le fichier .csv est valable, importation des données."
 }
 else {
     # Cette alerte prévient l’utilisateur d’un format incorrect, ce qui évite de lancer un traitement inutile.
@@ -51,7 +51,7 @@ try {
     $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
 }
 catch {
-    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-être read-only ou corrompu : $($_.Exception.Message)"
     exit 1
 }
 
@@ -100,7 +100,7 @@ foreach ($User in $userData) {
         New-ADUser @newUserInfo -Verbose
     }
     catch {
-        Write-Error "Erreur lors de la creation de l'utilisateur $Username (assurez-vous que vous avez les droits d'ecriture sur l'AD) : $($_.Exception.Message)"
+        Write-Error "Erreur lors de la création de l'utilisateur $Username (assurez-vous que vous avez les droits d'écriture sur l'AD) : $($_.Exception.Message)"
         exit 1
     }
 }
