@@ -42,8 +42,14 @@ else {
 
 # Le module Active Directory est indispensable pour manipuler les objets AD. Son chargement est obligatoire avant toute commande AD.
 Import-Module ActiveDirectory -ErrorAction Stop
-$adDomain = (Get-ADDomain).DNSRoot
-Write-Host "Domaine AD detecte : $adDomain"
+try {
+    $adDomain = (Get-ADDomain).DNSRoot
+    Write-Host "Domaine AD detecte : $adDomain"
+}
+catch {
+    Write-Error "Impossible de recuperer le domaine AD : $($_.Exception.Message)"
+    exit 1
+}
 
 $domainParts = $adDomain.Split('.')
 $domainName = $domainParts[0]
@@ -69,7 +75,13 @@ $userData | Export-CSV -Path $csvFilePath -Delimiter ';' -Encoding utf8 -NoTypeI
 Import-Module ActiveDirectory -ErrorAction Stop
 
 # Recharger le csv pour s’assurer d’avoir la version la plus récente.
-$userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+try {
+    $userData = Import-Csv -Path $csvFilePath -Delimiter ';'
+}
+catch {
+    Write-Error "Erreur lors de l'import du fichier CSV, il est peut-etre read-only ou corrompu : $($_.Exception.Message)"
+    exit 1
+}
 
 foreach ($organisationalUnit in $userData) {
     $ou = [string]$organisationalUnit.Department
@@ -88,12 +100,18 @@ else {
 }
 
 # Créer les OUs enfants correspondant aux départements, en évitant la création de doublons.
-foreach ($ou in $userData.Department | Select-Object -Unique) {
-    if (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'") {
-        Write-Host "L'OU $ou a deja ete cree."
+try {
+    foreach ($ou in $userData.Department | Select-Object -Unique) {
+        if (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'") {
+            Write-Host "L'OU $ou a deja ete cree."
+        }
+        else {
+            New-ADOrganizationalUnit -Name $ou -Path "OU=OU,DC=$dn,DC=$tld" -ProtectedFromAccidentalDeletion $False
+            Write-Host "Creation de l'OU $ou."
+        }
     }
-    else {
-        New-ADOrganizationalUnit -Name $ou -Path "OU=OU,DC=$dn,DC=$tld" -ProtectedFromAccidentalDeletion $False
-        Write-Host "Creation de l'OU $ou."
-    }
+}   
+catch {
+    Write-Error "Erreur lors de la creation de l'OU racine, il y a peut-etre un probleme de droits sur l'AD : $($_.Exception.Message)"
+    exit 1
 }
